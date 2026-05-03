@@ -12,7 +12,7 @@ CodexLM is a high-performance research ecosystem designed to transform multi-mod
 [![Gemini](https://img.shields.io/badge/Gemini-4285F4?style=flat-square&logo=google)](https://deepmind.google/technologies/gemini/)
 [![Pinecone](https://img.shields.io/badge/Pinecone-00c1d4?style=flat-square)](https://www.pinecone.io/)
 [![Deepgram](https://img.shields.io/badge/Deepgram-black?style=flat-square)](https://www.deepgram.com/)
-[![Clerk](https://img.shields.io/badge/Clerk-6C47FF?style=flat-square&logo=clerk)](https://clerk.com/)
+[![Stack Auth](https://img.shields.io/badge/Stack_Auth-indigo?style=flat-square)](https://stack-auth.com/)
 
 </div>
 
@@ -43,7 +43,7 @@ The Studio transforms raw research into structured professional outputs through 
 #### 1. Podcast Generation
 Converts complex documents into a two-person dialogue script. Features high-quality audio synthesis using Deepgram Aura-2, providing a professional audio briefing of your data.
 
-#### #### 2. Flashcard Suite
+#### 2. Flashcard Suite
 Generates interactive, 3D-rendered study cards. Optimized for rapid knowledge retention, allowing users to master large volumes of data through tactile digital interfaces.
 
 #### 3. Quiz Framework
@@ -55,7 +55,7 @@ Automatically constructs comprehensive assessments from ingested sources. Ideal 
 |-----------|------------|
 | Frontend | Next.js 15 (App Router), Framer Motion, Tailwind CSS v4 |
 | Database | Convex (Real-time Backend-as-a-Service) |
-| Authentication | Stack Auth / Clerk Integration |
+| Authentication | Stack Auth |
 | Vector Engine | Pinecone (Serverless) |
 | Audio Intelligence | Deepgram Aura-2 (TTS) and Nova-2 (STT) |
 | LLM Engine | Google Gemini 2.5 Flash Lite |
@@ -104,4 +104,4 @@ cd CodexLM
 *   `/services`: Metrics tracking and global application state management.
 
 ## License
-Distributed under the MIT License. See LICENSE for more information.
+Copyright (c) 2026 CodexLM. Distributed under the MIT License.
