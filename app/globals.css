@@ -198,3 +198,6 @@ body {
 
 .sleek-scrollbar::-webkit-scrollbar { width: 5px; } .sleek-scrollbar::-webkit-scrollbar-track { background: transparent; } .sleek-scrollbar::-webkit-scrollbar-thumb { background: rgba(79, 70, 229, 0.15); border-radius: 20px; } .sleek-scrollbar:hover::-webkit-scrollbar-thumb { background: rgba(79, 70, 229, 0.4); }
 
+
+input::placeholder, textarea::placeholder { opacity: 0.45; }
+

@@ -233,10 +233,8 @@ export default function SourcesPanel({ projectId, onSourceSelect, selectedSource
                             <div className={`p-2 rounded-lg bg-white dark:bg-slate-800 shadow-sm border border-border/50 group-hover:scale-110 transition-transform flex-shrink-0 ${selectedSourceId === source._id ? 'border-indigo-200 dark:border-indigo-800' : ''}`}>
                                 {source.status === 'processing' ? <Loader2 className="w-4 h-4 animate-spin" /> : getIcon(source.type)}
                             </div>
-                            <div className="flex-1 min-w-0">
-                                <p 
-                                    className="font-medium text-left text-slate-700 dark:text-slate-200 break-words leading-tight"
-                                >
+                            <div className="flex-1 min-w-0 py-1">
+                                <p className="font-bold text-left text-slate-700 dark:text-slate-200 break-all leading-snug text-[11px]">
                                     {source.name}
                                 </p>
                             </div>

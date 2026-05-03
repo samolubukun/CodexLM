@@ -8,6 +8,7 @@ import { upsertVector } from "@/lib/pinecone";
 import pdf from "pdf-parse-fork";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "@/convex/_generated/api";
+import { runWithConcurrency, withRetry } from "@/lib/concurrency";
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL);
 const deepgram = createClient(process.env.DEEPGRAM_API_KEY);
@@ -84,29 +85,44 @@ export async function POST(req) {
             chunks.push(extractedText.substring(i, i + CHUNK_SIZE + OVERLAP));
         }
 
-        // 3. Vectorization & Storage
-        for (let i = 0; i < chunks.length; i++) {
-            const chunk = chunks[i];
-            const embedding = await generateEmbeddings(chunk);
+        // 3. Vectorization & Storage (Concurrent & Resilient)
+        await runWithConcurrency(chunks, 5, async (chunk, i) => {
             const chunkId = `${sourceId}-chunk-${i}`;
 
-            // Save to Pinecone for search
-            await upsertVector(chunkId, embedding, {
-                projectId,
-                sourceId,
-                sourceName,
-                text: chunk.substring(0, 20000), // Pinecone metadata limit
-                chunkIndex: i
-            });
+            // A. Generate Embeddings with Retry
+            const embedding = await withRetry(
+                () => generateEmbeddings(chunk),
+                3,
+                1000
+            );
 
-            // Save to Convex for UI display and navigation
-            await convex.mutation(api.chunks.createChunk, {
-                sourceId: sourceId,
-                text: chunk,
-                chunkIndex: i,
-                embeddingId: chunkId
-            });
-        }
+            // B. Save to Pinecone for search with Retry
+            await withRetry(
+                () => upsertVector(chunkId, embedding, {
+                    projectId,
+                    sourceId,
+                    sourceName,
+                    text: chunk.substring(0, 20000), // Pinecone metadata limit
+                    chunkIndex: i
+                }),
+                3,
+                1500
+            );
+
+            // C. Save to Convex for UI display and navigation with Retry
+            await withRetry(
+                () => convex.mutation(api.chunks.createChunk, {
+                    sourceId: sourceId,
+                    text: chunk,
+                    chunkIndex: i,
+                    embeddingId: chunkId
+                }),
+                3,
+                1000
+            );
+            
+            console.log(`Processed chunk ${i + 1}/${chunks.length} for source ${sourceName}`);
+        });
 
         // 4. Mark Source as Completed
         await convex.mutation(api.sources.updateSourceStatus, {
