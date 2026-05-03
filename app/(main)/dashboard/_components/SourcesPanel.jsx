@@ -4,9 +4,11 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Plus, FileText, Globe, Video, Music, Image as ImageIcon, Loader2, UploadCloud, Folder, Library, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { useState } from "react";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 import { 
     Dialog, 
     DialogContent, 
@@ -104,29 +106,34 @@ export default function SourcesPanel({ projectId, onSourceSelect, selectedSource
         processFiles(files);
     };
 
-    const handleAddSource = async () => {
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [addType, setAddType] = useState(null); // 'file', 'url', 'youtube'
+    const [urlInput, setUrlInput] = useState("");
+
+    const handleAddSource = () => {
         if (!projectId) {
             toast.error("Please select a project first.");
             return;
         }
-        const type = prompt("Enter source type (url, youtube) or leave empty for file:");
-        if (type === null) return;
-        if (!type) {
-            document.getElementById('file-upload').click();
-            return;
-        }
+        setIsAddModalOpen(true);
+        setAddType(null);
+        setUrlInput("");
+    };
 
-        const url = prompt(`Enter ${type} link:`);
-        if (url) {
-            await createSource({
-                projectId,
-                type: type === 'youtube' ? 'youtube' : 'url',
-                name: url,
-                url: url,
-                status: "processed"
-            });
-            toast.success("Source added!");
-        }
+    const handleLinkSubmit = async () => {
+        if (!urlInput) return;
+        
+        const type = addType === 'youtube' ? 'youtube' : 'url';
+        await createSource({
+            projectId,
+            type,
+            name: urlInput,
+            url: urlInput,
+            status: "processed"
+        });
+        
+        toast.success(`${type === 'youtube' ? 'YouTube link' : 'URL'} added!`);
+        setIsAddModalOpen(false);
     };
 
     const handleDeleteSource = async () => {
@@ -292,6 +299,76 @@ export default function SourcesPanel({ projectId, onSourceSelect, selectedSource
                             Delete Source
                         </Button>
                     </DialogFooter>
+                </DialogContent>
+            </Dialog>
+            {/* Add Source Modal */}
+            <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2">
+                            <Plus className="w-5 h-5 text-indigo-600" />
+                            Add New Source
+                        </DialogTitle>
+                        <DialogDescription>
+                            Choose how you'd like to add your content to the knowledge base.
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    {!addType ? (
+                        <div className="grid grid-cols-3 gap-4 py-4">
+                            <button 
+                                onClick={() => {
+                                    setIsAddModalOpen(false);
+                                    document.getElementById('file-upload').click();
+                                }}
+                                className="flex flex-col items-center gap-2 p-4 rounded-2xl border-2 border-dashed border-slate-200 hover:border-indigo-500 hover:bg-indigo-50/50 transition-all group"
+                            >
+                                <UploadCloud className="w-8 h-8 text-slate-400 group-hover:text-indigo-600 transition-colors" />
+                                <span className="text-xs font-bold">File</span>
+                            </button>
+                            <button 
+                                onClick={() => setAddType('url')}
+                                className="flex flex-col items-center gap-2 p-4 rounded-2xl border-2 border-dashed border-slate-200 hover:border-blue-500 hover:bg-blue-50/50 transition-all group"
+                            >
+                                <Globe className="w-8 h-8 text-slate-400 group-hover:text-blue-600 transition-colors" />
+                                <span className="text-xs font-bold">URL</span>
+                            </button>
+                            <button 
+                                onClick={() => setAddType('youtube')}
+                                className="flex flex-col items-center gap-2 p-4 rounded-2xl border-2 border-dashed border-slate-200 hover:border-red-500 hover:bg-red-50/50 transition-all group"
+                            >
+                                <Video className="w-8 h-8 text-slate-400 group-hover:text-red-600 transition-colors" />
+                                <span className="text-xs font-bold">YouTube</span>
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="space-y-4 py-4">
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                                    {addType === 'youtube' ? 'YouTube Video URL' : 'Website URL'}
+                                </label>
+                                <Input 
+                                    placeholder={addType === 'youtube' ? "https://youtube.com/watch?v=..." : "https://example.com/article"}
+                                    value={urlInput}
+                                    onChange={(e) => setUrlInput(e.target.value)}
+                                    className="rounded-xl border-slate-200 focus:ring-indigo-500"
+                                    autoFocus
+                                />
+                            </div>
+                            <div className="flex gap-2">
+                                <Button variant="ghost" onClick={() => setAddType(null)} className="flex-1 rounded-xl">Back</Button>
+                                <Button 
+                                    onClick={handleLinkSubmit} 
+                                    className={cn(
+                                        "flex-1 rounded-xl shadow-lg shadow-indigo-500/20",
+                                        addType === 'youtube' ? "bg-red-600 hover:bg-red-700" : "bg-indigo-600 hover:bg-indigo-700"
+                                    )}
+                                >
+                                    Add Source
+                                </Button>
+                            </div>
+                        </div>
+                    )}
                 </DialogContent>
             </Dialog>
         </div>
