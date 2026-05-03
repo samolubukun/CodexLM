@@ -2,12 +2,22 @@ import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { queryVectors } from '@/lib/pinecone';
 import { generateEmbeddings } from '@/lib/embeddings';
+import { ConvexHttpClient } from "convex/browser";
+import { api } from "@/convex/_generated/api";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL);
 
 export async function POST(req) {
     try {
-        const { projectId, type, instructions } = await req.json();
+        const { projectId, type, instructions, jobId } = await req.json();
+
+        if (jobId) {
+            await convex.mutation(api.studio_jobs.updateJobStatus, {
+                jobId,
+                status: "processing"
+            });
+        }
 
         // 1. Fetch Context from Pinecone (RAG)
         // We'll use the instructions as a query to find relevant chunks
@@ -69,10 +79,34 @@ export async function POST(req) {
             }
         }
 
+        if (jobId) {
+            await convex.mutation(api.studio_jobs.updateJobStatus, {
+                jobId,
+                status: "completed",
+                output: output
+            });
+        }
+
         return NextResponse.json({ output });
 
     } catch (error) {
         console.error("Generation Error:", error);
+        
+        // Try to update job status to failed if we have a jobId
+        try {
+            const body = await req.json().catch(() => ({}));
+            const jobId = body.jobId;
+            if (jobId) {
+                await convex.mutation(api.studio_jobs.updateJobStatus, {
+                    jobId,
+                    status: "failed",
+                    output: { error: error.message }
+                });
+            }
+        } catch (e) {
+            console.error("Failed to update error status:", e);
+        }
+
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }
