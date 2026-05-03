@@ -49,6 +49,58 @@ const renderWithCitations = (children, citations, onCitationClick) => {
     return Array.isArray(children) ? children.map(processCitations) : processCitations(children);
 };
 
+const TypewriterEffect = ({ text, isNew = false, children }) => {
+    const [displayedText, setDisplayedText] = useState(isNew ? "" : text);
+    const [isComplete, setIsComplete] = useState(!isNew);
+    
+    useEffect(() => {
+        if (!isNew || isComplete || !text) {
+            setDisplayedText(text);
+            return;
+        }
+
+        let currentIndex = 0;
+        let lastTime = performance.now();
+        const fullText = text;
+        
+        const animate = (currentTime) => {
+            const deltaTime = currentTime - lastTime;
+            
+            // Fast, dynamic reveal speed
+            const char = fullText[currentIndex];
+            let delay = 10; // ms per char base
+            
+            if (char === '.' || char === '?' || char === '!') delay = 100; 
+            if (char === ' ' || char === '\n') delay = 5; 
+            
+            if (deltaTime >= delay) {
+                const charsToAppend = Math.max(1, Math.floor(deltaTime / delay));
+                currentIndex = Math.min(fullText.length, currentIndex + charsToAppend);
+                setDisplayedText(fullText.substring(0, currentIndex));
+                lastTime = currentTime;
+            }
+
+            if (currentIndex < fullText.length) {
+                requestAnimationFrame(animate);
+            } else {
+                setIsComplete(true);
+            }
+        };
+
+        const animationFrame = requestAnimationFrame(animate);
+        return () => cancelAnimationFrame(animationFrame);
+    }, [text, isNew]);
+
+    return (
+        <div className={cn(
+            "relative transition-all duration-300",
+            !isComplete && "after:content-[''] after:inline-block after:w-1 after:h-3 after:bg-indigo-500 after:ml-0.5 after:animate-pulse"
+        )}>
+            {children ? children(displayedText) : displayedText}
+        </div>
+    );
+};
+
 export default function ChatPanel({ projectId, selectedSourceId, onCitationClick }) {
     const [input, setInput] = useState('');
     const [isTyping, setIsTyping] = useState(false);
@@ -233,27 +285,34 @@ export default function ChatPanel({ projectId, selectedSourceId, onCitationClick
                                 ? 'bg-indigo-600 text-white rounded-tr-none shadow-md' 
                                 : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-tl-none shadow-sm border border-border/50'
                             }`}>
-                                <ReactMarkdown 
-                                    components={{
-                                        p: ({node, children, ...props}) => (
-                                            <p className="mb-3 last:mb-0" {...props}>
-                                                {renderWithCitations(children, msg.citations, onCitationClick)}
-                                            </p>
-                                        ),
-                                        li: ({node, children, ...props}) => (
-                                            <li className="mb-1" {...props}>
-                                                {renderWithCitations(children, msg.citations, onCitationClick)}
-                                            </li>
-                                        ),
-                                        ul: ({node, ...props}) => <ul className="list-disc pl-4 mb-3 space-y-1" {...props} />,
-                                        ol: ({node, ...props}) => <ol className="list-decimal pl-4 mb-3 space-y-1" {...props} />,
-                                        strong: ({node, ...props}) => (
-                                            <strong className={`font-bold ${msg.role === 'user' ? 'text-white underline decoration-white/30' : 'text-indigo-600 dark:text-indigo-400'}`} {...props} />
-                                        ),
-                                    }}
+                                <TypewriterEffect 
+                                    text={msg.content} 
+                                    isNew={msg._id && msg._id.startsWith('temp')}
                                 >
-                                    {msg.content}
-                                </ReactMarkdown>
+                                    {(text) => (
+                                        <ReactMarkdown 
+                                            components={{
+                                                p: ({node, children, ...props}) => (
+                                                    <p className="mb-3 last:mb-0" {...props}>
+                                                        {renderWithCitations(children, msg.citations, onCitationClick)}
+                                                    </p>
+                                                ),
+                                                li: ({node, children, ...props}) => (
+                                                    <li className="mb-1" {...props}>
+                                                        {renderWithCitations(children, msg.citations, onCitationClick)}
+                                                    </li>
+                                                ),
+                                                ul: ({node, ...props}) => <ul className="list-disc pl-4 mb-3 space-y-1" {...props} />,
+                                                ol: ({node, ...props}) => <ol className="list-decimal pl-4 mb-3 space-y-1" {...props} />,
+                                                strong: ({node, ...props}) => (
+                                                    <strong className={`font-bold ${msg.role === 'user' ? 'text-white underline decoration-white/30' : 'text-indigo-600 dark:text-indigo-400'}`} {...props} />
+                                                ),
+                                            }}
+                                        >
+                                            {text}
+                                        </ReactMarkdown>
+                                    )}
+                                </TypewriterEffect>
                                 
                                 {Array.isArray(msg.citations) && msg.citations.length > 0 && (
                                     <div className="mt-3 pt-3 border-t border-black/10 dark:border-white/10 flex flex-wrap gap-2">
