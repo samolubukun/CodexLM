@@ -1,115 +1,107 @@
+# CodexLM
+
 <div align="center">
 
-# 🧠 CodexLM
+### The Professional Agentic AI Research Platform
 
-### *The Professional Agentic AI Research Platform*
+CodexLM is a high-performance research ecosystem designed to transform multi-modal data sources into structured, actionable knowledge. The platform provides a unified workspace for document ingestion, semantic search, and professional content generation.
 
-CodexLM is a high-performance research ecosystem that transforms raw data into actionable knowledge. Move beyond simple chat with an agentic workspace that understands your sources across text, audio, and web, then generates professional-grade assets.
-
-[![Status](https://img.shields.io/badge/status-active-indigo.svg?style=for-the-badge)]()
-[![Next.js](https://img.shields.io/badge/Next.js-15+-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
-[![Database](https://img.shields.io/badge/Database-Convex-f97316?style=for-the-badge)](https://convex.dev/)
-[![AI](https://img.shields.io/badge/AI-Gemini_2.5_Flash_Lite-4285F4?style=for-the-badge&logo=google)](https://deepmind.google/technologies/gemini/)
+[![Status](https://img.shields.io/badge/status-active-indigo.svg?style=flat-square)]()
+[![Next.js](https://img.shields.io/badge/Next.js-black?style=flat-square&logo=next.js)](https://nextjs.org/)
+[![Convex](https://img.shields.io/badge/Convex-f97316?style=flat-square)](https://convex.dev/)
+[![Gemini](https://img.shields.io/badge/Gemini-4285F4?style=flat-square&logo=google)](https://deepmind.google/technologies/gemini/)
+[![Pinecone](https://img.shields.io/badge/Pinecone-00c1d4?style=flat-square)](https://www.pinecone.io/)
+[![Deepgram](https://img.shields.io/badge/Deepgram-black?style=flat-square)](https://www.deepgram.com/)
+[![Clerk](https://img.shields.io/badge/Clerk-6C47FF?style=flat-square&logo=clerk)](https://clerk.com/)
 
 </div>
 
 ---
 
-## 🚀 Core Features
+## Technical Overview
+CodexLM leverages an agentic RAG (Retrieval-Augmented Generation) architecture to move beyond simple chat. It understands sources across text, audio, and web interfaces, then utilizes a specialized Studio to generate professional-grade assets.
 
-### 📡 Multi-Modal Source Ingestion
-CodexLM isn't just for PDFs. It's a unified brain for all your research:
-*   **Documents**: Full support for PDF, DOCX, and PPTX with high-fidelity text extraction.
-*   **Audio**: Deepgram-powered transcription for interviews and research recordings.
-*   **Web**: Real-time URL scraping and YouTube transcript ingestion.
-*   **Direct**: Plain text and project notes integration.
+## Key Features
 
-### 🤖 Agentic RAG Chat
-A research-first chat interface grounded in your specific data:
-*   **Hybrid Search**: Combines Pinecone vector semantic search with exact keyword matching.
-*   **Transparent Citations**: Every AI response includes clickable badges showing the exact source filename.
-*   **Project Memory**: Set project-wide instructions (tone, focus, constraints) that persist across every chat.
-*   **Voice Search**: Hands-free interaction with high-fidelity voice recognition.
+### Multi-Modal Source Ingestion
+The platform supports a wide range of data formats for comprehensive research:
+*   Documents: Native support for PDF, DOCX, and PPTX with high-fidelity text extraction.
+*   Audio: Automated transcription of research recordings and interviews powered by Deepgram Nova-2.
+*   Web Access: Real-time URL scraping and YouTube transcript extraction for current event integration.
+*   Direct Notes: Support for plain text input and persistent project-wide instructions.
 
-### 🎨 The Studio (Content Production)
-Transform your research into ready-to-use professional assets:
-*   **🎙️ Audio Overview**: Generate a 2-person podcast dialogue script and high-quality audio synthesis.
-*   **🎓 Learning Suite**: Instant creation of Flash Cards and Interactive Quizzes from your sources.
-*   **📄 Document Engine**: Draft technical PRDs, Business Reports, and Slide Deck outlines.
-*   **📐 Visual Design**: Generate Mermaid.js flow diagrams and architectural visualizations.
-*   **📣 Marketing Pack**: Create social media threads and email templates tailored to your data.
+### Agentic RAG Engine
+A specialized research-first chat interface grounded in project-specific data:
+*   Hybrid Search: Combines Pinecone vector semantic embeddings with traditional keyword matching.
+*   Source Attribution: Automated citation generation with direct links to processed sources.
+*   Project Context: System-level instructions that define tone, scope, and constraints for the AI agent.
+*   Voice Interaction: High-fidelity speech-to-text for hands-free knowledge retrieval.
 
----
+### Creative Studio Modes
+The Studio transforms raw research into structured professional outputs through three primary modes:
 
-## 🛠️ Technology Stack
+#### 1. Podcast Generation
+Converts complex documents into a two-person dialogue script. Features high-quality audio synthesis using Deepgram Aura-2, providing a professional audio briefing of your data.
 
-| Layer | Technology |
-|-------|------------|
-| **Frontend** | Next.js 15 (Turbo), Framer Motion, Tailwind CSS v4 |
-| **Backend** | Convex (Real-time Database), Stack Auth |
-| **Intelligence** | Google Gemini 2.5 Flash Lite (LLM), Cloudflare Qwen (Embeddings) |
-| **Search** | Pinecone (Vector DB) |
-| **Audio** | Deepgram Aura-2 (TTS) & Deepgram Nova-2 (STT) |
-| **Storage** | DigitalOcean Spaces (S3-Compatible) |
+#### #### 2. Flashcard Suite
+Generates interactive, 3D-rendered study cards. Optimized for rapid knowledge retention, allowing users to master large volumes of data through tactile digital interfaces.
 
----
+#### 3. Quiz Framework
+Automatically constructs comprehensive assessments from ingested sources. Ideal for knowledge verification and technical onboarding.
 
-## 🏁 Getting Started
+## Technical Stack
 
-### 1. Prerequisites
-*   Node.js 18+
-*   Convex Account
-*   Pinecone API Key
-*   Google Gemini API Key
-*   Deepgram API Key
-*   DigitalOcean Spaces Credentials
+| Component | Technology |
+|-----------|------------|
+| Frontend | Next.js 15 (App Router), Framer Motion, Tailwind CSS v4 |
+| Database | Convex (Real-time Backend-as-a-Service) |
+| Authentication | Stack Auth / Clerk Integration |
+| Vector Engine | Pinecone (Serverless) |
+| Audio Intelligence | Deepgram Aura-2 (TTS) and Nova-2 (STT) |
+| LLM Engine | Google Gemini 2.5 Flash Lite |
+| File Storage | DigitalOcean Spaces (S3-Compatible) |
 
-### 2. Environment Setup
-Create a `.env.local` file in the root:
-```env
-# Backend (Convex)
-CONVEX_DEPLOYMENT=...
-NEXT_PUBLIC_CONVEX_URL=...
+## Installation and Setup
 
-# AI & Search
-GEMINI_API_KEY=...
-PINECONE_API_KEY=...
-PINECONE_INDEX=...
-
-# Audio & Storage
-DEEPGRAM_API_KEY=...
-DO_SPACES_KEY=...
-DO_SPACES_SECRET=...
-DO_SPACES_ENDPOINT=...
-DO_SPACES_BUCKET=...
-
-# Auth
-NEXT_PUBLIC_STACK_PROJECT_ID=...
-NEXT_PUBLIC_STACK_PUBLISHABLE_CLIENT_KEY=...
-STACK_SECRET_SERVER_KEY=...
-```
-
-### 3. Installation
+### 1. Clone the Repository
 ```bash
-# Install dependencies
-npm install
-
-# Start the Convex backend
-npx convex dev
-
-# Start the Next.js development server
-npm run dev
+git clone https://github.com/samolubukun/CodexLM.git
+cd CodexLM
 ```
 
----
+### 2. Prerequisites
+*   Node.js 18 or higher
+*   Convex CLI
+*   DigitalOcean Spaces account
+*   Required API Keys: Google Gemini, Deepgram, Pinecone, LangSearch
 
-## 🔒 Security & Persistence
-*   **Stack Auth Integration**: Multi-user support with isolated project environments.
-*   **Cloud Persistence**: All jobs, sources, and generated assets are stored in the cloud (Convex/DO) and are accessible from any device.
-*   **Data Integrity**: Checksums and metadata tracking for every ingested source.
+### 3. Environment Configuration
+1.  Copy the provided example environment file:
+    ```bash
+    cp .env.example .env.local
+    ```
+2.  Populate `.env.local` with your respective API keys and configuration strings as detailed in the example file.
 
----
+### 4. Local Development
+1.  Install dependencies:
+    ```bash
+    npm install
+    ```
+2.  Initialize the Convex backend:
+    ```bash
+    npx convex dev
+    ```
+3.  Launch the development server:
+    ```bash
+    npm run dev
+    ```
 
-<div align="center">
-Built with ❤️ for the future of Agentic Research.
-</div>
+## Project Structure
+*   `/app`: Next.js application routes and page logic.
+*   `/convex`: Server-side functions, database schemas, and background jobs.
+*   `/components`: Reusable UI components including the Studio and Chat interfaces.
+*   `/lib`: Core utility functions for AI integration and data processing.
+*   `/services`: Metrics tracking and global application state management.
+
+## License
+Distributed under the MIT License. See LICENSE for more information.
