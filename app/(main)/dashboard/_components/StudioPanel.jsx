@@ -268,7 +268,8 @@ export default function StudioPanel({ projectId }) {
         if (!result) return null;
 
         // Case 1: Audio Result
-        if (result.audioUrl) {
+        const audioUrl = result.audioUrl || result.url;
+        if (audioUrl && (audioUrl.endsWith('.wav') || audioUrl.endsWith('.mp3') || audioUrl.includes('podcast-'))) {
             return (
                 <div className="space-y-6 animate-in fade-in zoom-in duration-500 overflow-x-hidden">
                     <div className="p-6 pb-6 bg-[#1a1b3b] rounded-[2rem] text-white shadow-2xl shadow-indigo-950/40 flex flex-col items-center text-center gap-4 border border-white/5 w-full max-w-full">
@@ -277,14 +278,14 @@ export default function StudioPanel({ projectId }) {
                             <p className="text-white/40 text-[9px] font-bold uppercase tracking-[0.2em] mt-1">Generated overview with Alex & Jordan</p>
                         </div>
                         
-                        <AudioVisualizer src={result.audioUrl} />
+                        <AudioVisualizer src={audioUrl} />
 
                         <Button 
                             variant="secondary" 
                             className="w-full bg-white text-indigo-600 hover:bg-slate-100 font-bold rounded-xl cursor-pointer"
                             onClick={async () => {
                                 try {
-                                    const res = await fetch(result.audioUrl);
+                                    const res = await fetch(audioUrl);
                                     const blob = await res.blob();
                                     const blobUrl = URL.createObjectURL(blob);
                                     const a = document.createElement('a');
