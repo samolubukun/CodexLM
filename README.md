@@ -1,6 +1,7 @@
-# CodexLM
 
 <div align="center">
+ 
+# CodexLM
 
 ### The Professional Agentic AI Research Platform
 

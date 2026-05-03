@@ -48,8 +48,14 @@ export async function POST(req) {
             
             OPERATIONAL PROTOCOL:
             1. For ANY question, your first step should almost always be to call 'source_lookup' to see if the project files contain the answer.
-            2. Only use 'web_search' if the information is explicitly NOT found in the documents OR if the user asks for external real-time data (like news or stock prices).
-            3. If 'source_lookup' returns relevant information, prioritize it over general knowledge.
+            2. Only use 'web_search' if the information is explicitly NOT found in the documents.
+            3. If 'source_lookup' returns relevant information, prioritize it.
+            
+            CITATIONS:
+            - When using information from the documents, you MUST include a citation in the format [n] where n is the index of the source in the provided context.
+            - Example: "The company's revenue grew by 20% in 2023 [1]."
+            - You can use multiple citations like [1][2] if multiple sources support the statement.
+            - If you use 'web_search', you do not need to provide [n] citations for those facts, but still mention the source if possible.
             
             Project ID: ${projectId}
             Project Memory/Instructions: ${projectMemory || "None"}`
@@ -82,11 +88,13 @@ export async function POST(req) {
                     const matches = await queryVectors(vector, 5, { projectId });
                     console.log(`Source lookup found ${matches.length} matches`);
                     
-                    const context = matches.map(m => m.metadata.text).join("\n---\n");
+                    // Format context with [n] labels for the model to cite
+                    const context = matches.map((m, i) => `Source [${i+1}]:\nContent: ${m.metadata.text}\nSource Name: ${m.metadata.sourceName}`).join("\n---\n");
+                    
                     toolResults.push({
                         name: "source_lookup",
                         response: { content: context },
-                        matches: matches // Store matches for citation extraction
+                        matches: matches // Store matches for citation extraction later
                     });
                 }
             }
@@ -110,33 +118,39 @@ export async function POST(req) {
                 // We have real document content — force Gemini to summarize it properly
                 const summaryModel = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
                 const summaryResult = await summaryModel.generateContent(
-                    `The user asked: "${lastMessage}"\n\nHere is the relevant content found in their documents:\n\n${lookupRes.response.content}\n\nPlease write a clear, concise answer based only on this content. Do not mention that you searched documents — just answer naturally.`
+                    `The user asked: "${lastMessage}"\n\nHere is the relevant content found in their documents:\n\n${lookupRes.response.content}\n\nPlease write a clear, concise answer based only on this content. Include citations like [1], [2] based on the "Source [n]" labels provided above.`
                 );
-                text = summaryResult.response.text() || "I found some relevant content but had trouble summarizing it. Please try rephrasing your question.";
+                text = summaryResult.response.text() || "I found some relevant content but had trouble summarizing it.";
             } else if (!webSearchEnabled) {
-                // No relevant docs found AND web search is off
-                text = "I couldn't find anything in your documents about that. 💡 **Tip:** Enable **Web Search** (the 🌐 globe icon) in the chat to search the internet for real-time questions like this one.";
+                text = "I couldn't find anything in your documents about that.";
             } else {
-                text = "I searched but couldn't find a specific answer. Could you please rephrase your question?";
+                text = "I searched but couldn't find a specific answer.";
             }
         }
 
+        // Citation Extraction Logic
         const citations = [];
+        const sourceLookup = toolResults.find(tr => tr.name === "source_lookup");
         
-        // Extract citations from toolResults
-        if (toolResults && toolResults.length > 0) {
-            const lookupResult = toolResults.find(tr => tr.name === "source_lookup");
-            if (lookupResult && lookupResult.matches) {
-                lookupResult.matches.forEach(m => {
-                    if (m.metadata.sourceName && !citations.includes(m.metadata.sourceName)) {
-                        citations.push(m.metadata.sourceName);
-                    }
-                });
-            }
+        if (sourceLookup && sourceLookup.matches) {
+            // Find all [n] patterns in the text
+            const citationMatches = [...text.matchAll(/\[(\d+)\]/g)];
+            const uniqueIndices = [...new Set(citationMatches.map(m => parseInt(m[1])))];
+            
+            uniqueIndices.forEach(index => {
+                const match = sourceLookup.matches[index - 1];
+                if (match) {
+                    citations.push({
+                        index: index,
+                        sourceId: match.metadata.sourceId,
+                        sourceName: match.metadata.sourceName,
+                        text: match.metadata.text,
+                        chunkIndex: match.metadata.chunkIndex,
+                        pageNumber: match.metadata.pageNumber
+                    });
+                }
+            });
         }
-
-        console.log("Final Response Text Length:", text.length);
-        console.log("Citations found:", citations.length);
 
         return NextResponse.json({
             message: {

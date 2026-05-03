@@ -8,8 +8,43 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import ReactMarkdown from 'react-markdown';
+import { cn } from '@/lib/utils';
 
-export default function ChatPanel({ projectId, selectedSourceId }) {
+const renderWithCitations = (children, citations, onCitationClick) => {
+    const processCitations = (child) => {
+        if (typeof child !== 'string') return child;
+        
+        const parts = child.split(/(\[\d+\])/g);
+        return parts.map((part, idx) => {
+            const match = part.match(/\[(\d+)\]/);
+            if (match) {
+                const citationIndex = parseInt(match[1]);
+                const citation = Array.isArray(citations) ? citations.find(c => c.index === citationIndex) : null;
+                
+                return (
+                    <span 
+                        key={idx}
+                        onClick={() => citation && onCitationClick?.(citation)}
+                        className={cn(
+                            "inline-flex items-center justify-center w-5 h-5 ml-1 text-[10px] font-bold rounded-full cursor-pointer transition-all",
+                            citation 
+                                ? "bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm" 
+                                : "bg-slate-200 text-slate-500"
+                        )}
+                        title={citation?.text?.substring(0, 200) + "..."}
+                    >
+                        {citationIndex}
+                    </span>
+                );
+            }
+            return part;
+        });
+    };
+
+    return Array.isArray(children) ? children.map(processCitations) : processCitations(children);
+};
+
+export default function ChatPanel({ projectId, selectedSourceId, onCitationClick }) {
     const [input, setInput] = useState('');
     const [isTyping, setIsTyping] = useState(false);
     const [isRecording, setIsRecording] = useState(false);
@@ -149,10 +184,18 @@ export default function ChatPanel({ projectId, selectedSourceId }) {
                             }`}>
                                 <ReactMarkdown 
                                     components={{
-                                        p: ({node, ...props}) => <p className="mb-3 last:mb-0" {...props} />,
+                                        p: ({node, children, ...props}) => (
+                                            <p className="mb-3 last:mb-0" {...props}>
+                                                {renderWithCitations(children, msg.citations, onCitationClick)}
+                                            </p>
+                                        ),
+                                        li: ({node, children, ...props}) => (
+                                            <li className="mb-1" {...props}>
+                                                {renderWithCitations(children, msg.citations, onCitationClick)}
+                                            </li>
+                                        ),
                                         ul: ({node, ...props}) => <ul className="list-disc pl-4 mb-3 space-y-1" {...props} />,
                                         ol: ({node, ...props}) => <ol className="list-decimal pl-4 mb-3 space-y-1" {...props} />,
-                                        li: ({node, ...props}) => <li className="mb-1" {...props} />,
                                         strong: ({node, ...props}) => (
                                             <strong className={`font-bold ${msg.role === 'user' ? 'text-white underline decoration-white/30' : 'text-indigo-600 dark:text-indigo-400'}`} {...props} />
                                         ),
@@ -161,11 +204,22 @@ export default function ChatPanel({ projectId, selectedSourceId }) {
                                     {msg.content}
                                 </ReactMarkdown>
                                 
-                                {msg.citations && msg.citations.length > 0 && (
+                                {Array.isArray(msg.citations) && msg.citations.length > 0 && (
                                     <div className="mt-3 pt-3 border-t border-black/10 dark:border-white/10 flex flex-wrap gap-2">
-                                        {msg.citations.map((cit, idx) => (
-                                            <span key={idx} className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-black/5 dark:bg-white/5 text-[10px] font-medium cursor-help hover:bg-black/10 dark:hover:bg-white/10 transition-colors" title={cit}>
-                                                <FileText className="w-3 h-3" /> {cit}
+                                        {/* Deduplicate citations by sourceId for the footer list */}
+                                        {msg.citations.reduce((unique, cit) => {
+                                            if (!unique.some(u => u.sourceId === cit.sourceId)) {
+                                                unique.push(cit);
+                                            }
+                                            return unique;
+                                        }, []).map((cit, idx) => (
+                                            <span 
+                                                key={idx} 
+                                                onClick={() => onCitationClick?.(cit)}
+                                                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black/5 dark:bg-white/5 text-[10px] font-bold text-slate-600 dark:text-slate-400 cursor-pointer hover:bg-black/10 dark:hover:bg-white/10 transition-colors border border-black/5 dark:border-white/5" 
+                                                title={`View ${cit.sourceName}`}
+                                            >
+                                                <FileText className="w-3 h-3 text-indigo-500" /> {cit.sourceName}
                                             </span>
                                         ))}
                                     </div>

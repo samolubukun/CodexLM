@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
 import { deleteVectors } from "@/lib/pinecone";
+import { ConvexHttpClient } from "convex/browser";
+import { api } from "@/convex/_generated/api";
+
+const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL);
 
 export async function POST(req) {
     try {
@@ -19,7 +23,14 @@ export async function POST(req) {
             console.log(`[Full Purge] Pinecone vectors deleted for source: ${sourceId}`);
         } catch (error) {
             console.error(`[Full Purge] Pinecone deletion failed for ${sourceId}:`, error);
-            // We continue anyway so the Convex record can be deleted
+        }
+
+        // 2. Delete chunks from Convex
+        try {
+            await convex.mutation(api.chunks.deleteChunksBySource, { sourceId });
+            console.log(`[Full Purge] Convex chunks deleted for source: ${sourceId}`);
+        } catch (error) {
+            console.error(`[Full Purge] Convex chunks deletion failed for ${sourceId}:`, error);
         }
 
         return NextResponse.json({ success: true });

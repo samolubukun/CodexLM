@@ -20,7 +20,6 @@ async function extractPdfText(buffer) {
         return data.text
             .replace(/\r\n/g, '\n')
             .replace(/[^\x20-\x7E\n]/g, ' ') // Replace non-printable with space
-            .replace(/\s+/g, ' ')            // Collapse all whitespace
             .trim();
     } catch (error) {
         console.error("PDF Extraction Error:", error);
@@ -85,18 +84,27 @@ export async function POST(req) {
             chunks.push(extractedText.substring(i, i + CHUNK_SIZE + OVERLAP));
         }
 
-        // 3. Vectorization
+        // 3. Vectorization & Storage
         for (let i = 0; i < chunks.length; i++) {
             const chunk = chunks[i];
             const embedding = await generateEmbeddings(chunk);
             const chunkId = `${sourceId}-chunk-${i}`;
 
+            // Save to Pinecone for search
             await upsertVector(chunkId, embedding, {
                 projectId,
                 sourceId,
                 sourceName,
-                text: chunk.substring(0, 20000),
+                text: chunk.substring(0, 20000), // Pinecone metadata limit
                 chunkIndex: i
+            });
+
+            // Save to Convex for UI display and navigation
+            await convex.mutation(api.chunks.createChunk, {
+                sourceId: sourceId,
+                text: chunk,
+                chunkIndex: i,
+                embeddingId: chunkId
             });
         }
 

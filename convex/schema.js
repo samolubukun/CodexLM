@@ -38,7 +38,7 @@ export default defineSchema({
         projectId: v.id('projects'),
         role: v.string(), // user, assistant, system
         content: v.any(), // JSONB to store complex message blocks
-        citations: v.optional(v.array(v.string())), // Array of chunkIds
+        citations: v.optional(v.any()), // Array of rich citation objects
     }).index("by_project", ["projectId"]),
 
     studio_jobs: defineTable({

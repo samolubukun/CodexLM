@@ -17,7 +17,7 @@ export const sendMessage = mutation({
         projectId: v.id('projects'),
         role: v.string(),
         content: v.any(),
-        citations: v.optional(v.array(v.string())),
+        citations: v.optional(v.any()),
     },
     handler: async (ctx, args) => {
         return await ctx.db.insert("messages", {
