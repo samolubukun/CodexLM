@@ -9,6 +9,7 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import ReactMarkdown from 'react-markdown';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 const renderWithCitations = (children, citations, onCitationClick) => {
     const processCitations = (child) => {
@@ -143,15 +144,47 @@ export default function ChatPanel({ projectId, selectedSourceId, onCitationClick
         }
     };
 
-    const handleVoiceInput = async () => {
-        if (isRecording) {
-            setIsRecording(false);
-            // In a real implementation, you'd stop recording and send to API
-            const transcript = "Tell me about the main themes.";
-            setInput(transcript);
-        } else {
-            setIsRecording(true);
+    const handleVoiceInput = () => {
+        if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+            toast.error("Speech recognition is not supported in this browser.");
+            return;
         }
+
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+
+        recognition.lang = 'en-US';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        if (isRecording) {
+            // If already recording, we'd normally stop it, but for Web Speech API 
+            // it usually stops automatically after speech ends.
+            // We'll just toggle the state.
+            setIsRecording(false);
+            return;
+        }
+
+        setIsRecording(true);
+        toast.info("Listening...");
+
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            setInput(prev => prev + (prev ? " " : "") + transcript);
+            setIsRecording(false);
+        };
+
+        recognition.onerror = (event) => {
+            console.error("Speech recognition error:", event.error);
+            setIsRecording(false);
+            toast.error("Could not recognize speech.");
+        };
+
+        recognition.onend = () => {
+            setIsRecording(false);
+        };
+
+        recognition.start();
     };
 
     if (!projectId) {
@@ -265,9 +298,6 @@ export default function ChatPanel({ projectId, selectedSourceId, onCitationClick
             <div className="p-4 border-t border-border">
                 <div className="max-w-3xl mx-auto relative group">
                     <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50">
-                            <Paperclip className="h-4 w-4" />
-                        </Button>
                         <Button 
                             variant="ghost" 
                             size="icon" 
@@ -298,7 +328,7 @@ export default function ChatPanel({ projectId, selectedSourceId, onCitationClick
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                        className="pl-[140px] pr-12 h-14 bg-slate-50 dark:bg-slate-800 border-border focus:ring-indigo-500 rounded-2xl transition-all shadow-sm"
+                        className="pl-28 pr-12 h-14 bg-slate-50 dark:bg-slate-800 border-border focus:ring-indigo-500 rounded-2xl transition-all shadow-sm"
                     />
                     <Button 
                         onClick={handleSend}

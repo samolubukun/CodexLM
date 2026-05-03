@@ -58,15 +58,15 @@ export default function Dashboard() {
                 'border-l border-border bg-white dark:bg-slate-900 flex-shrink-0 transition-all duration-300',
                 isSidebarCollapsed ? 'flex-1' : 'w-96'
             )}>
-                {rightPanelTab === 'studio' ? (
-                    <StudioPanel 
-                        projectId={selectedProjectId}
-                    />
-                ) : (
+                {rightPanelTab === 'source' && selectedSourceId ? (
                     <SourceViewer 
                         sourceId={selectedSourceId}
                         activePassage={activePassage}
                         onBack={() => setRightPanelTab('studio')}
+                    />
+                ) : (
+                    <StudioPanel 
+                        projectId={selectedProjectId}
                     />
                 )}
             </div>
