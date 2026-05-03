@@ -11,7 +11,7 @@ export async function POST(req) {
         const { messages, projectId, sourceId, projectMemory, webSearchEnabled } = await req.json();
 
         const availableTools = [];
-        
+
         // Always include source_lookup
         availableTools.push({
             name: "source_lookup",
@@ -40,8 +40,8 @@ export async function POST(req) {
             });
         }
 
-        const model = genAI.getGenerativeModel({ 
-            model: "gemini-2.5-flash-lite", 
+        const model = genAI.getGenerativeModel({
+            model: "gemini-2.5-flash-lite",
             tools: availableTools.length > 0 ? [{ functionDeclarations: availableTools }] : [],
             systemInstruction: `You are CodexLM, an elite research assistant. 
             PRIMARY MISSION: You must treat the user's uploaded documents as the absolute source of truth.
@@ -71,7 +71,7 @@ export async function POST(req) {
         const lastMessage = messages[messages.length - 1].content;
         let result = await chat.sendMessage(lastMessage);
         let response = await result.response;
-        
+
         const calls = response.functionCalls();
         let toolResults = [];
         if (calls) {
@@ -87,10 +87,10 @@ export async function POST(req) {
                     const vector = await generateEmbeddings(call.args.query);
                     const matches = await queryVectors(vector, 5, { projectId });
                     console.log(`Source lookup found ${matches.length} matches`);
-                    
+
                     // Format context with [n] labels for the model to cite
-                    const context = matches.map((m, i) => `Source [${i+1}]:\nContent: ${m.metadata.text}\nSource Name: ${m.metadata.sourceName}`).join("\n---\n");
-                    
+                    const context = matches.map((m, i) => `Source [${i + 1}]:\nContent: ${m.metadata.text}\nSource Name: ${m.metadata.sourceName}`).join("\n---\n");
+
                     toolResults.push({
                         name: "source_lookup",
                         response: { content: context },
@@ -108,11 +108,21 @@ export async function POST(req) {
             response = await result.response;
         }
 
-        let text = response.text();
+        let text = "";
+        try {
+            text = response.text();
+        } catch (e) {
+            console.error("Error getting text from response:", e);
+            // Try to get text from candidates if text() fails
+            if (response.candidates?.[0]?.content?.parts?.[0]?.text) {
+                text = response.candidates[0].content.parts[0].text;
+            }
+        }
         
         // Smart fallback: If Gemini returned empty text after using a tool
         if (!text || text.trim().length === 0) {
             const lookupRes = toolResults.find(tr => tr.name === "source_lookup");
+            const webRes = toolResults.find(tr => tr.name === "web_search");
 
             if (lookupRes && lookupRes.response.content && lookupRes.response.content.trim().length > 50) {
                 // We have real document content — force Gemini to summarize it properly
@@ -120,23 +130,32 @@ export async function POST(req) {
                 const summaryResult = await summaryModel.generateContent(
                     `The user asked: "${lastMessage}"\n\nHere is the relevant content found in their documents:\n\n${lookupRes.response.content}\n\nPlease write a clear, concise answer based only on this content. Include citations like [1], [2] based on the "Source [n]" labels provided above.`
                 );
-                text = summaryResult.response.text() || "I found some relevant content but had trouble summarizing it.";
+                text = summaryResult.response.text() || "I found relevant information in your documents but had trouble formatting a response.";
+            } else if (webRes && webRes.response.content) {
+                text = "I found some information online: " + webRes.response.content.substring(0, 500) + "...";
             } else if (!webSearchEnabled) {
-                text = "I couldn't find anything in your documents about that.";
+                text = "I checked your documents but couldn't find a specific answer to that question.";
             } else {
-                text = "I searched but couldn't find a specific answer.";
+                text = "I searched your documents and the web but couldn't find a definitive answer.";
             }
         }
 
         // Citation Extraction Logic
         const citations = [];
         const sourceLookup = toolResults.find(tr => tr.name === "source_lookup");
-        
+
         if (sourceLookup && sourceLookup.matches) {
-            // Find all [n] patterns in the text
-            const citationMatches = [...text.matchAll(/\[(\d+)\]/g)];
-            const uniqueIndices = [...new Set(citationMatches.map(m => parseInt(m[1])))];
+            // Find all [n] or [n, m] patterns in the text
+            const bracketMatches = [...text.matchAll(/\[([\d,\s]+)\]/g)];
+            const indices = [];
             
+            bracketMatches.forEach(match => {
+                const parts = match[1].split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n));
+                indices.push(...parts);
+            });
+            
+            const uniqueIndices = [...new Set(indices)];
+
             uniqueIndices.forEach(index => {
                 const match = sourceLookup.matches[index - 1];
                 if (match) {

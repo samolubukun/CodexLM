@@ -14,28 +14,32 @@ const renderWithCitations = (children, citations, onCitationClick) => {
     const processCitations = (child) => {
         if (typeof child !== 'string') return child;
         
-        const parts = child.split(/(\[\d+\])/g);
+        // Find patterns like [1], [1, 2], [1][2]
+        const parts = child.split(/(\[[\d,\s]+\])/g);
         return parts.map((part, idx) => {
-            const match = part.match(/\[(\d+)\]/);
+            const match = part.match(/\[([\d,\s]+)\]/);
             if (match) {
-                const citationIndex = parseInt(match[1]);
-                const citation = Array.isArray(citations) ? citations.find(c => c.index === citationIndex) : null;
+                // Split by comma and clean up spaces to handle [1, 2, 3]
+                const indices = match[1].split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n));
                 
-                return (
-                    <span 
-                        key={idx}
-                        onClick={() => citation && onCitationClick?.(citation)}
-                        className={cn(
-                            "inline-flex items-center justify-center w-5 h-5 ml-1 text-[10px] font-bold rounded-full cursor-pointer transition-all",
-                            citation 
-                                ? "bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm" 
-                                : "bg-slate-200 text-slate-500"
-                        )}
-                        title={citation?.text?.substring(0, 200) + "..."}
-                    >
-                        {citationIndex}
-                    </span>
-                );
+                return indices.map((citationIndex, iIdx) => {
+                    const citation = Array.isArray(citations) ? citations.find(c => c.index === citationIndex) : null;
+                    return (
+                        <span 
+                            key={`${idx}-${iIdx}`}
+                            onClick={() => citation && onCitationClick?.(citation)}
+                            className={cn(
+                                "inline-flex items-center justify-center w-5 h-5 ml-1 text-[10px] font-bold rounded-full cursor-pointer transition-all shrink-0",
+                                citation 
+                                    ? "bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm" 
+                                    : "bg-slate-200 text-slate-500"
+                            )}
+                            title={citation?.text?.substring(0, 200) + "..."}
+                        >
+                            {citationIndex}
+                        </span>
+                    );
+                });
             }
             return part;
         });
@@ -100,15 +104,26 @@ export default function ChatPanel({ projectId, selectedSourceId, onCitationClick
                 })
             });
 
+            if (!response.ok) throw new Error('Failed to fetch response');
+
             const data = await response.json();
-            if (!data.message?.content) throw new Error("Empty response from AI");
+            const assistantContent = data.message?.content || "";
+            const citations = data.message?.citations || [];
+
+            // Update optimistic message with final content
+            setOptimisticMessages(prev => [...prev, {
+                role: 'assistant',
+                content: assistantContent,
+                _id: 'temp-assistant',
+                citations
+            }]);
 
             // 3. Save assistant message to database
             await sendMessage({
                 projectId,
                 role: 'assistant',
-                content: data.message.content,
-                citations: data.message.citations || []
+                content: assistantContent,
+                citations: citations
             });
         } catch (error) {
             console.error("Failed to get AI response:", error);
@@ -120,8 +135,11 @@ export default function ChatPanel({ projectId, selectedSourceId, onCitationClick
             }]);
         } finally {
             setIsTyping(false);
-            // Clear optimistic messages - the real ones from DB will take over
-            setOptimisticMessages([]);
+            // Wait a moment for Convex to reflect the new message before clearing optimistic state
+            // this prevents the "disappearing message" flicker
+            setTimeout(() => {
+                setOptimisticMessages([]);
+            }, 1000);
         }
     };
 
