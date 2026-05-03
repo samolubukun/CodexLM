@@ -21,6 +21,8 @@ import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { useQuery, useMutation } from "convex/react"
 import { api } from "@/convex/_generated/api"
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
 function AudioVisualizer({ src }) {
     const audioRef = useRef(null);
@@ -199,11 +201,31 @@ export default function StudioPanel({ projectId }) {
     const [activeType, setActiveType] = useState(null);
     const [jobToDelete, setJobToDelete] = useState(null);
     const [isTranscriptOpen, setIsTranscriptOpen] = useState(false);
+    const [isResultModalOpen, setIsResultModalOpen] = useState(false);
 
     const jobs = useQuery(api.studio_jobs.getJobsByProject, projectId ? { projectId } : "skip") || [];
     const createJob = useMutation(api.studio_jobs.createJob);
     const updateJobStatus = useMutation(api.studio_jobs.updateJobStatus);
     const deleteJob = useMutation(api.studio_jobs.deleteJob);
+
+    // Clear results when switching projects
+    useEffect(() => {
+        setResult(null);
+        setActiveType(null);
+        setIsResultModalOpen(false);
+    }, [projectId]);
+
+    const handleViewResult = (jobOutput, type) => {
+        setResult(jobOutput);
+        setActiveType(type);
+        
+        // Only open modal for documents, keep interactive in sidebar
+        if (!isInteractiveType(type)) {
+            setIsResultModalOpen(true);
+        } else {
+            toast.success(`Viewing ${type} in sidebar`);
+        }
+    };
 
     const categories = [
         { id: 'audio', name: 'Audio', icon: Headphones, items: [{id: 'podcast', name: 'Podcast Overview'}] },
@@ -244,9 +266,18 @@ export default function StudioPanel({ projectId }) {
             const data = await res.json();
             
             // Backend already handles database update for podcast/content
-            setResult(data.output || data);
+            const finalResult = data.output || data;
+            setResult(finalResult);
+            
+            // Only auto-pop the modal for document types
+            if (!isInteractiveType(type)) {
+                setIsResultModalOpen(true);
+            } else {
+                toast.success(`${type} generated!`);
+            }
         } catch (error) {
             console.error("Studio Error:", error);
+            toast.error("Failed to generate content.");
         } finally {
             setIsGenerating(false);
         }
@@ -264,14 +295,53 @@ export default function StudioPanel({ projectId }) {
         }
     };
 
-    const renderResult = () => {
+    const isInteractiveType = (type) => ['podcast', 'flashcards', 'quiz'].includes(type);
+
+    const renderResult = (inModal = false) => {
         if (!result) return null;
+
+        const sidebarHeader = !inModal && isInteractiveType(activeType) && (
+            <div className="flex items-center justify-end mb-4">
+                <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="h-7 text-[9px] font-black uppercase tracking-widest text-slate-400 hover:text-indigo-600 hover:bg-indigo-50"
+                    onClick={() => setIsResultModalOpen(true)}
+                >
+                    <Zap className="w-3 h-3 mr-1" />
+                    Full Screen
+                </Button>
+            </div>
+        );
+
+        // If we are in the sidebar but the type is a document, show a condensed version
+        if (!inModal && !isInteractiveType(activeType)) {
+            return (
+                <div className="p-4 bg-indigo-50/50 dark:bg-indigo-900/10 rounded-2xl border border-indigo-200/50 dark:border-indigo-500/20 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                        <FileText className="w-4 h-4 text-indigo-600" />
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-indigo-600 truncate max-w-[120px]">
+                            {activeType === 'prd' ? 'PRD' : activeType} Document
+                        </span>
+                    </div>
+                    <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="h-7 text-[9px] font-black uppercase tracking-tighter text-indigo-600 hover:bg-indigo-100"
+                        onClick={() => setIsResultModalOpen(true)}
+                    >
+                        Open Viewer
+                    </Button>
+                </div>
+            );
+        }
 
         // Case 1: Audio Result
         const audioUrl = result.audioUrl || result.url;
         if (audioUrl && (audioUrl.endsWith('.wav') || audioUrl.endsWith('.mp3') || audioUrl.includes('podcast-'))) {
             return (
-                <div className="space-y-6 animate-in fade-in zoom-in duration-500 overflow-x-hidden">
+                <div className="space-y-4 animate-in fade-in zoom-in duration-500 overflow-x-hidden">
+                    {sidebarHeader}
                     <div className="p-6 pb-6 bg-[#1a1b3b] rounded-[2rem] text-white shadow-2xl shadow-indigo-950/40 flex flex-col items-center text-center gap-4 border border-white/5 w-full max-w-full">
                         <div>
                             <h4 className="text-lg font-black tracking-tight">Podcast Ready</h4>
@@ -343,10 +413,13 @@ export default function StudioPanel({ projectId }) {
             const isFlashcards = result.length > 0 && result[0].question && result[0].answer;
             if (isFlashcards || activeType === 'flashcards') {
                 return (
-                    <div className="grid grid-cols-1 gap-6 pb-8">
-                        {result.map((card, i) => (
-                            <Flashcard key={i} question={card.question} answer={card.answer} />
-                        ))}
+                    <div className="space-y-4">
+                        {sidebarHeader}
+                        <div className="grid grid-cols-1 gap-6 pb-8">
+                            {result.map((card, i) => (
+                                <Flashcard key={i} question={card.question} answer={card.answer} />
+                            ))}
+                        </div>
                     </div>
                 );
             }
@@ -362,24 +435,110 @@ export default function StudioPanel({ projectId }) {
             
             return (
                 <div className="space-y-4">
-                    {result.map((item, i) => (
-                        <div key={i} className="p-5 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-border/50">
-                            <h4 className="font-black text-xs uppercase tracking-wider text-indigo-600 mb-2">{item.question || item.title || `Item ${i+1}`}</h4>
-                            <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
-                                {item.answer || (Array.isArray(item.content) ? item.content.join('\n') : item.content)}
-                            </p>
-                        </div>
-                    ))}
+                    {sidebarHeader}
+                    <div className="space-y-4">
+                        {result.map((item, i) => (
+                            <div key={i} className="p-5 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-border/50">
+                                <h4 className="font-black text-xs uppercase tracking-wider text-indigo-600 mb-2">{item.question || item.title || `Item ${i+1}`}</h4>
+                                <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+                                    {item.answer || (Array.isArray(item.content) ? item.content.join('\n') : item.content)}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             );
         }
 
-        // Case 3: Simple string or object with content
+        // Case 3: Simple string or object with content (PRD, Marketing, etc)
         const displayContent = typeof result === 'string' ? result : (result.content || JSON.stringify(result, null, 2));
         
+        const handleExportPDF = () => {
+            const printWindow = window.open('', '_blank');
+            const content = displayContent;
+            
+            printWindow.document.write(`
+                <html>
+                    <head>
+                        <title>${activeType?.toUpperCase() || 'Document'}</title>
+                        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+                        <style>
+                            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+                            body { 
+                                font-family: 'Inter', sans-serif; 
+                                padding: 50px; 
+                                color: #1e293b;
+                                line-height: 1.6;
+                            }
+                            .prose h1 { font-weight: 900; font-size: 2.5rem; margin-bottom: 1.5rem; border-bottom: 4px solid #4f46e5; padding-bottom: 0.5rem; }
+                            .prose h2 { font-weight: 800; font-size: 1.8rem; margin-top: 2rem; margin-bottom: 1rem; color: #4f46e5; }
+                            .prose h3 { font-weight: 700; font-size: 1.4rem; margin-top: 1.5rem; }
+                            .prose p { margin-bottom: 1rem; }
+                            .prose table { width: 100%; border-collapse: collapse; margin: 2rem 0; }
+                            .prose th { background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px; text-align: left; font-weight: bold; }
+                            .prose td { border: 1px solid #e2e8f0; padding: 12px; }
+                            @media print {
+                                body { padding: 0; }
+                                .no-print { display: none; }
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="prose max-w-none">
+                            ${document.getElementById('studio-result-content').innerHTML}
+                        </div>
+                    </body>
+                </html>
+            `);
+            printWindow.document.close();
+            setTimeout(() => {
+                printWindow.print();
+            }, 500);
+        };
+
         return (
-            <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap font-mono text-[11px] leading-relaxed text-slate-700 dark:text-slate-300 p-4 bg-white dark:bg-slate-800 rounded-2xl border border-border/50">
-                {displayContent}
+            <div className="bg-white dark:bg-slate-900 rounded-3xl border border-border/50 shadow-sm overflow-hidden w-full min-w-0">
+                <div 
+                    id="studio-result-content" 
+                    className="p-8 prose prose-slate dark:prose-invert max-w-none w-full min-w-0 overflow-x-hidden
+                        prose-headings:font-black prose-headings:tracking-tight prose-headings:break-words
+                        prose-h1:text-3xl prose-h1:mb-6 prose-h1:border-b-4 prose-h1:border-indigo-600 prose-h1:pb-4
+                        prose-h2:text-xl prose-h2:text-indigo-600 prose-h2:mt-10
+                        prose-p:leading-relaxed prose-p:text-slate-600 dark:prose-p:text-slate-300 prose-p:break-words
+                        prose-table:block prose-table:overflow-x-auto prose-th:p-3 prose-td:p-3 prose-td:whitespace-normal"
+                >
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{displayContent}</ReactMarkdown>
+                </div>
+                <div className="px-8 py-4 bg-slate-50 dark:bg-slate-800/50 border-t border-border/50 flex justify-end gap-3">
+                    <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-indigo-600 rounded-xl"
+                        onClick={() => {
+                            const blob = new Blob([displayContent], { type: 'text/markdown' });
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = `${activeType || 'studio'}-output.md`;
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                            URL.revokeObjectURL(url);
+                        }}
+                    >
+                        <Download className="w-3 h-3 mr-2" />
+                        Markdown
+                    </Button>
+                    <Button 
+                        variant="default" 
+                        size="sm" 
+                        className="text-[10px] font-black uppercase tracking-widest bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-lg shadow-indigo-500/20"
+                        onClick={handleExportPDF}
+                    >
+                        <FileText className="w-3 h-3 mr-2" />
+                        Export PDF
+                    </Button>
+                </div>
             </div>
         );
     };
@@ -445,7 +604,7 @@ export default function StudioPanel({ projectId }) {
                                 <Button variant="ghost" size="sm" className="h-8 text-[10px] font-bold uppercase tracking-widest text-slate-400" onClick={() => setResult(null)}>Clear</Button>
                             </div>
                             <div className="w-full">
-                                {renderResult()}
+                                {renderResult(false)}
                             </div>
                         </div>
                     )}
@@ -472,7 +631,7 @@ export default function StudioPanel({ projectId }) {
                                                 variant="ghost" 
                                                 size="sm" 
                                                 className="h-8 text-[10px] font-bold uppercase tracking-widest text-indigo-600"
-                                                onClick={() => setResult(job.output)}
+                                                onClick={() => handleViewResult(job.output, job.type)}
                                             >
                                                 View
                                             </Button>
@@ -495,6 +654,35 @@ export default function StudioPanel({ projectId }) {
                     </div>
                 </div>
             </ScrollArea>
+
+            {/* Result Modal */}
+            <Dialog open={isResultModalOpen} onOpenChange={setIsResultModalOpen}>
+                <DialogContent className="max-w-[95vw] lg:max-w-5xl h-[90vh] flex flex-col p-0 border-none shadow-2xl overflow-hidden bg-white dark:bg-slate-950">
+                    <DialogHeader className="p-6 bg-slate-50 dark:bg-slate-900 border-b border-border flex flex-row items-center justify-between space-y-0 shrink-0">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                                <Wand2 className="w-5 h-5 text-white" />
+                            </div>
+                            <div>
+                                <DialogTitle className="text-xl font-black tracking-tight capitalize">{activeType} Result</DialogTitle>
+                                <DialogDescription className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Studio Intelligence Output</DialogDescription>
+                            </div>
+                        </div>
+                    </DialogHeader>
+                    
+                    <div className="flex-1 overflow-y-auto sleek-scrollbar">
+                        <div className="max-w-4xl mx-auto w-full py-12 px-6 lg:px-12">
+                            {renderResult(true)}
+                        </div>
+                    </div>
+                    
+                    <DialogFooter className="p-4 bg-slate-50 dark:bg-slate-900 border-t border-border flex justify-end shrink-0">
+                        <DialogClose asChild>
+                            <Button variant="outline" className="rounded-xl font-bold">Close Viewer</Button>
+                        </DialogClose>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
 
             {/* Delete Confirmation Modal */}
             <Dialog open={!!jobToDelete} onOpenChange={(open) => !open && setJobToDelete(null)}>

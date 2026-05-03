@@ -55,7 +55,7 @@ export default function Dashboard() {
 
             {/* Right Panel: Studio / Source Viewer */}
             <div className={cn(
-                'border-l border-border bg-white dark:bg-slate-900 flex-shrink-0 transition-all duration-300',
+                'border-l border-border bg-white dark:bg-slate-900 flex-shrink-0 transition-all duration-300 overflow-hidden min-w-0',
                 isSidebarCollapsed ? 'flex-1' : 'w-96'
             )}>
                 {rightPanelTab === 'source' && selectedSourceId ? (
