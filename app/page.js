@@ -25,7 +25,20 @@ import {
     Plus,
     MoreVertical,
     Trash2,
-    HelpCircle
+    HelpCircle,
+    ChevronDown,
+    ChevronLeft,
+    Folder,
+    Network,
+    Workflow,
+    Presentation,
+    Table,
+    PieChart,
+    Headphones,
+    Play,
+    SkipForward,
+    SkipBack,
+    User
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -52,6 +65,11 @@ export default function LandingPage() {
             desc: "Transform static data into dynamic outputs. Effortlessly generate study guides, technical briefs, and presentation outlines in seconds." 
         },
         { 
+            icon: Layout, 
+            title: "AI Visualizations", 
+            desc: "Instantly visualize complex concepts. Generate fully interactive Mermaid.js mind maps and flow diagrams directly from your source material." 
+        },
+        { 
             icon: Dices, 
             title: "Interactive 3D Study Tools", 
             desc: "Master your materials with tactile, physical-feeling flashcards. Flip between questions and answers with a high-fidelity 3D interface." 
@@ -70,11 +88,6 @@ export default function LandingPage() {
             icon: Globe, 
             title: "Live Knowledge Bridge", 
             desc: "Stay current. Connect your local research with real-time web access to ensure your insights are backed by the most up-to-date information." 
-        },
-        { 
-            icon: UploadCloud, 
-            title: "Seamless Drag and Drop", 
-            desc: "Moving data should be effortless. Simply drop your files anywhere in the workspace to start the instant processing engine." 
         },
         { 
             icon: ShieldCheck, 
@@ -146,108 +159,169 @@ export default function LandingPage() {
                         >
                             {/* Desktop View Mockup */}
                             <div className="hidden md:block p-3 rounded-[2.5rem] bg-white border border-slate-200 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.12)] transition-transform duration-700 group-hover:scale-[1.01]">
-                                <div className="rounded-[1.8rem] overflow-hidden bg-slate-50 aspect-video border border-slate-200 flex shadow-inner text-left">
-                                    <div className="w-[18%] border-r border-slate-200 p-4 bg-white/60">
-                                        <div className="flex items-center justify-between mb-6">
-                                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Projects</span>
-                                            <Plus className="w-3 h-3 text-slate-400" />
+                                <div className="rounded-[1.8rem] overflow-hidden bg-slate-50 aspect-video border border-slate-200 flex flex-col shadow-inner text-left">
+                                    
+                                    {/* Mockup AppHeader */}
+                                    <div className="h-14 border-b border-slate-200 bg-white flex items-center px-6 justify-between flex-shrink-0">
+                                        <div className="flex items-center gap-2">
+                                            <Image src="/logo.png" alt="CodexLM" width={24} height={24} />
+                                            <span className="text-sm font-black tracking-tighter">Codex<span className="text-indigo-600">LM</span></span>
                                         </div>
-                                        <div className="space-y-2 pt-2">
-                                            <div className="p-2.5 bg-white rounded-xl border border-indigo-100 shadow-sm flex items-center gap-2">
-                                                <div className="w-3.5 h-3.5 bg-indigo-600 rounded-sm" />
-                                                <span className="text-[11px] font-bold text-slate-800 truncate">CodexLM Project</span>
+                                        <div className="flex items-center gap-3">
+                                            <div className="h-8 px-3 bg-slate-100 rounded-lg flex items-center gap-2 border border-slate-200">
+                                                <Folder className="w-3.5 h-3.5 text-slate-500" />
+                                                <span className="text-xs font-bold text-slate-800">Project Apollo</span>
+                                                <ChevronDown className="w-3.5 h-3.5 text-slate-500" />
                                             </div>
-                                            {["Research Hub", "Product Q4"].map(name => (
-                                                <div key={name} className="p-2.5 flex items-center gap-2 opacity-40">
-                                                    <div className="w-3.5 h-3.5 bg-slate-200 rounded-sm" />
-                                                    <span className="text-[11px] font-medium text-slate-600">{name}</span>
-                                                </div>
-                                            ))}
+                                            <div className="h-8 px-3 bg-indigo-50 border border-indigo-100 rounded-lg flex items-center gap-1.5">
+                                                <Plus className="w-3.5 h-3.5 text-indigo-600" />
+                                                <span className="text-[10px] font-bold text-indigo-700 uppercase tracking-widest">New</span>
+                                            </div>
+                                            <div className="w-px h-5 bg-slate-200 mx-1" />
+                                            <div className="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center">
+                                                <User className="w-4 h-4 text-slate-500" />
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className="w-[22%] border-r border-slate-200 p-5 bg-white">
-                                        <div className="flex items-center justify-between mb-6">
-                                            <div className="flex items-center gap-2">
-                                                <BookOpen className="w-3.5 h-3.5 text-indigo-600" />
-                                                <span className="text-xs font-black uppercase tracking-widest text-slate-900">Sources</span>
-                                            </div>
-                                            <Plus className="w-3 h-3 text-slate-400" />
-                                        </div>
-                                        <div className="space-y-3 pt-2">
-                                            <div className="p-3 rounded-2xl bg-indigo-50/50 border border-indigo-100 flex items-center gap-3">
-                                                <div className="w-8 h-8 bg-white rounded-lg shadow-sm border border-indigo-100 flex items-center justify-center flex-shrink-0">
-                                                    <FileText className="w-4 h-4 text-rose-500" />
+
+                                    {/* 3-Panel Workspace Mockup */}
+                                    <div className="flex-1 flex overflow-hidden">
+                                        {/* Sources Panel */}
+                                        <div className="w-[28%] border-r border-slate-200 p-6 bg-white flex flex-col">
+                                            <div className="flex items-center justify-between mb-6">
+                                                <div className="flex items-center gap-2">
+                                                    <BookOpen className="w-4 h-4 text-indigo-600" />
+                                                    <span className="text-xs font-black uppercase tracking-widest text-slate-900">Sources</span>
                                                 </div>
+                                                <Plus className="w-4 h-4 text-slate-400" />
+                                            </div>
+                                            <div className="space-y-3 pt-2">
+                                                <div className="p-3.5 rounded-2xl bg-indigo-50/50 border border-indigo-100 flex items-center gap-3">
+                                                    <div className="w-10 h-10 bg-white rounded-xl shadow-sm border border-indigo-100 flex items-center justify-center flex-shrink-0">
+                                                        <FileText className="w-5 h-5 text-rose-500" />
+                                                    </div>
+                                                    <div className="min-w-0">
+                                                        <p className="text-xs font-bold text-indigo-700 truncate">Mission_Brief.pdf</p>
+                                                        <p className="text-[10px] text-indigo-400 font-bold uppercase tracking-widest mt-0.5">Processed</p>
+                                                    </div>
+                                                </div>
+                                                <div className="p-3.5 rounded-2xl flex items-center gap-3 opacity-50 hover:bg-slate-50 transition-colors">
+                                                    <div className="w-10 h-10 bg-white rounded-xl border border-slate-200 flex items-center justify-center flex-shrink-0">
+                                                        <Mic className="w-5 h-5 text-emerald-500" />
+                                                    </div>
+                                                    <p className="text-xs font-bold text-slate-600 truncate">Interview_Rec.mp3</p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Chat Panel */}
+                                        <div className="flex-[1.2] flex flex-col bg-slate-50/30 relative">
+                                            <div className="p-5 border-b border-slate-100 flex items-center gap-3 bg-white">
+                                                <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center shadow-md shadow-indigo-500/20"><Bot className="w-4 h-4 text-white" /></div>
                                                 <div className="min-w-0">
-                                                    <p className="text-[11px] font-bold text-indigo-700 truncate">Mission_Brief.pdf</p>
-                                                    <p className="text-[9px] text-indigo-400 font-bold uppercase tracking-widest">Processed</p>
+                                                    <p className="text-xs font-black text-slate-900">CodexLM Assistant</p>
+                                                    <p className="text-[9px] text-emerald-500 font-black uppercase tracking-widest mt-0.5">Active Context</p>
                                                 </div>
                                             </div>
-                                            <div className="p-3 rounded-2xl flex items-center gap-3 opacity-50">
-                                                <div className="w-8 h-8 bg-slate-50 rounded-lg border border-slate-200 flex items-center justify-center flex-shrink-0">
-                                                    <Mic className="w-4 h-4 text-emerald-500" />
+                                            <div className="flex-1 p-8 space-y-8 overflow-hidden bg-white/50 backdrop-blur-sm">
+                                                <div className="flex gap-4">
+                                                    <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0 border border-indigo-200">
+                                                        <Bot className="w-4 h-4 text-indigo-600" />
+                                                    </div>
+                                                    <div className="p-5 bg-indigo-50 rounded-[2rem] rounded-tl-none border border-indigo-100 w-[85%] shadow-sm">
+                                                        <p className="text-xs md:text-sm leading-relaxed text-indigo-900 font-medium italic">"I've fully analyzed the Mission Brief. The document outlines the new backend rendering engine. What would you like to know?"</p>
+                                                    </div>
                                                 </div>
-                                                <p className="text-[11px] font-medium text-slate-600 truncate">Interview_Rec.mp3</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="flex-1 flex flex-col bg-white relative">
-                                        <div className="p-4 border-b border-slate-100 flex items-center gap-3">
-                                            <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center"><Bot className="w-5 h-5 text-white" /></div>
-                                            <div className="min-w-0">
-                                                <p className="text-[11px] font-black text-slate-900">CodexLM Assistant</p>
-                                                <p className="text-[8px] text-emerald-500 font-black uppercase tracking-widest">Active Context</p>
-                                            </div>
-                                        </div>
-                                        <div className="flex-1 p-6 space-y-6 overflow-hidden">
-                                            <div className="flex gap-3">
-                                                <div className="w-6 h-6 rounded-full bg-indigo-50 border border-indigo-100 flex-shrink-0" />
-                                                <div className="p-4 bg-indigo-50/50 rounded-3xl rounded-tl-none border border-indigo-100 w-[85%]">
-                                                    <p className="text-[10px] leading-relaxed text-indigo-900/80 font-medium italic">"Welcome back! I've analyzed your mission brief. What would you like to explore?"</p>
+                                                <div className="flex gap-4 flex-row-reverse">
+                                                    <div className="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center flex-shrink-0">
+                                                        <User className="w-4 h-4 text-slate-500" />
+                                                    </div>
+                                                    <div className="p-5 bg-white rounded-[2rem] rounded-tr-none border border-slate-200 shadow-sm shadow-slate-200/50">
+                                                        <p className="text-xs md:text-sm leading-relaxed text-slate-700 font-bold">"What are the core architectural components?"</p>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div className="flex gap-3 flex-row-reverse">
-                                                <div className="w-6 h-6 rounded-full bg-slate-100 flex-shrink-0" />
-                                                <div className="p-4 bg-slate-50 rounded-3xl rounded-tr-none border border-slate-200 w-[65%]">
-                                                    <p className="text-[10px] leading-relaxed text-slate-700 font-bold">"Summarize the key mission."</p>
+                                            <div className="p-6 bg-white border-t border-slate-100">
+                                                <div className="h-14 bg-slate-50 border border-slate-200 rounded-2xl flex items-center px-4 justify-between shadow-inner">
+                                                    <p className="text-xs text-slate-400 font-medium">Ask anything about your sources...</p>
+                                                    <div className="w-8 h-8 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20"><ChevronRight className="w-4 h-4 text-white" /></div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="p-4 mt-auto">
-                                            <div className="h-11 bg-slate-50 border border-slate-200 rounded-2xl flex items-center px-4 justify-between shadow-sm">
-                                                <p className="text-[10px] text-slate-400 font-medium">Ask anything...</p>
-                                                <div className="w-7 h-7 bg-indigo-600 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-500/20"><ChevronRight className="w-4 h-4 text-white" /></div>
+
+                                        {/* Studio Panel */}
+                                        <div className="flex-1 border-l border-slate-200 flex flex-col bg-slate-50 p-6 relative overflow-hidden">
+                                            <div className="flex items-center gap-2 mb-6">
+                                                <Zap className="w-5 h-5 text-indigo-600 fill-indigo-600" />
+                                                <span className="text-sm font-black uppercase tracking-widest text-slate-900">Studio</span>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div className="w-[30%] border-l border-slate-200 flex flex-col bg-slate-50/50 p-6 space-y-6">
-                                        <div className="flex items-center gap-2 mb-4">
-                                            <Zap className="w-4 h-4 text-indigo-600 fill-indigo-600" />
-                                            <span className="text-[11px] font-black uppercase tracking-widest text-slate-900">Studio</span>
-                                        </div>
-                                        {/* Desktop Studio Options - SWAPPED */}
-                                        <div className="grid grid-cols-2 gap-3">
-                                            <div className="flex flex-col gap-3">
-                                                <div className="p-3 bg-white rounded-2xl border border-indigo-100 shadow-sm flex flex-col gap-2">
-                                                    <Dices className="w-4 h-4 text-indigo-600" />
-                                                    <p className="text-[9px] font-black uppercase tracking-widest text-slate-900">Flashcard</p>
+                                            
+                                            <div className="grid grid-cols-2 gap-2">
+                                                <div className="p-2.5 bg-white rounded-xl border border-slate-200 shadow-sm flex items-center gap-2">
+                                                    <Headphones className="w-3.5 h-3.5 text-emerald-500" />
+                                                    <span className="text-[9px] font-bold">Podcast</span>
                                                 </div>
-                                                <div className="p-3 bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-2">
-                                                    <HelpCircle className="w-4 h-4 text-orange-500" />
-                                                    <p className="text-[9px] font-black uppercase tracking-widest text-slate-900">Quiz</p>
+                                                <div className="p-2.5 bg-white rounded-xl border border-slate-200 shadow-sm flex items-center gap-2">
+                                                    <Dices className="w-3.5 h-3.5 text-indigo-500" />
+                                                    <span className="text-[9px] font-bold">Cards</span>
+                                                </div>
+                                                <div className="p-2.5 bg-white rounded-xl border border-slate-200 shadow-sm flex items-center gap-2">
+                                                    <HelpCircle className="w-3.5 h-3.5 text-rose-500" />
+                                                    <span className="text-[9px] font-bold">Quiz</span>
+                                                </div>
+                                                <div className="p-2.5 bg-white rounded-xl border border-slate-200 shadow-sm flex items-center gap-2">
+                                                    <Table className="w-3.5 h-3.5 text-blue-500" />
+                                                    <span className="text-[9px] font-bold">Data Table</span>
+                                                </div>
+                                                <div className="p-2.5 bg-white rounded-xl border border-slate-200 shadow-sm flex items-center gap-2">
+                                                    <PieChart className="w-3.5 h-3.5 text-purple-500" />
+                                                    <span className="text-[9px] font-bold">Infographic</span>
+                                                </div>
+                                                <div className="p-2.5 bg-white rounded-xl border border-slate-200 shadow-sm flex items-center gap-2">
+                                                    <Presentation className="w-3.5 h-3.5 text-orange-500" />
+                                                    <span className="text-[9px] font-bold">Slide Deck</span>
+                                                </div>
+                                                <div className="p-2.5 bg-white rounded-xl border border-slate-200 shadow-sm flex items-center gap-2">
+                                                    <Network className="w-3.5 h-3.5 text-indigo-600" />
+                                                    <span className="text-[9px] font-bold">Mind Map</span>
+                                                </div>
+                                                <div className="p-2.5 bg-white rounded-xl border border-slate-200 shadow-sm flex items-center gap-2">
+                                                    <Workflow className="w-3.5 h-3.5 text-orange-600" />
+                                                    <span className="text-[9px] font-bold">Flow Diagram</span>
                                                 </div>
                                             </div>
-                                            <div className="p-3 bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col items-center justify-center gap-3">
-                                                <Mic className="w-6 h-6 text-emerald-500" />
-                                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-900">Podcast</p>
+
+                                            {/* Preview Artifact */}
+                                            <div className="mt-4 flex-1 bg-white rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden flex flex-col">
+                                                <div className="p-3 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                                                    <div className="flex items-center gap-2">
+                                                        <Headphones className="w-3.5 h-3.5 text-emerald-600" />
+                                                        <span className="text-[9px] font-black text-emerald-900 uppercase">Podcast Overview</span>
+                                                    </div>
+                                                    <MoreVertical className="w-3 h-3 text-slate-400" />
+                                                </div>
+                                                <div className="flex-1 p-4 flex flex-col justify-center items-center bg-white relative">
+                                                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-600 mb-4 shadow-lg shadow-emerald-500/20 flex items-center justify-center">
+                                                        <Mic className="w-6 h-6 text-white" />
+                                                    </div>
+                                                    <div className="w-full space-y-2 mb-4">
+                                                        <div className="h-1 bg-slate-100 rounded-full w-full overflow-hidden">
+                                                            <div className="h-full bg-emerald-500 w-1/3 rounded-full" />
+                                                        </div>
+                                                        <div className="flex justify-between text-[7px] font-bold text-slate-400">
+                                                            <span>02:14</span>
+                                                            <span>06:45</span>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center gap-4">
+                                                        <SkipBack className="w-3 h-3 text-slate-400" />
+                                                        <div className="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center shadow-md shadow-emerald-500/20">
+                                                            <Play className="w-3 h-3 text-white ml-0.5" />
+                                                        </div>
+                                                        <SkipForward className="w-3 h-3 text-slate-400" />
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                        
-                                        <div className="p-5 bg-white rounded-3xl border-2 border-indigo-50 shadow-xl shadow-indigo-500/5 relative overflow-hidden">
-                                            <div className="absolute top-0 left-0 w-1 h-full bg-indigo-600" />
-                                            <p className="text-[10px] font-black text-indigo-600 uppercase mb-2">Question</p>
-                                            <p className="text-[11px] font-bold text-slate-800 leading-tight">"What is the primary objective of CodexLM's mission?"</p>
-                                            <div className="mt-4 p-2 bg-indigo-50 rounded-lg text-center"><p className="text-[8px] font-black text-indigo-500 uppercase tracking-widest">Tap to Flip</p></div>
                                         </div>
                                     </div>
                                 </div>
@@ -289,10 +363,15 @@ export default function LandingPage() {
                                                         <span className="text-[10px] font-black text-slate-900 uppercase">Assistant</span>
                                                     </div>
                                                     <div className="p-4 bg-indigo-600 rounded-2xl rounded-tl-none shadow-lg shadow-indigo-500/20">
-                                                        <p className="text-[10px] text-white font-medium leading-relaxed italic">"I've analyzed your research. Ready to generate cards or briefings?"</p>
+                                                        <p className="text-[10px] text-white font-medium leading-relaxed italic">"I've fully analyzed your research documents. What questions do you have?"</p>
                                                     </div>
-                                                    <div className="p-3 bg-white rounded-2xl rounded-tr-none border border-slate-200 w-3/4 ml-auto">
-                                                        <p className="text-[10px] text-slate-700 font-bold">"Summarize the findings."</p>
+                                                    <div className="flex justify-end gap-2">
+                                                        <div className="p-3 bg-white rounded-2xl rounded-tr-none border border-slate-200 shadow-sm">
+                                                            <p className="text-[10px] text-slate-700 font-bold">"Summarize the core findings."</p>
+                                                        </div>
+                                                        <div className="w-6 h-6 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center flex-shrink-0">
+                                                            <User className="w-3 h-3 text-slate-500" />
+                                                        </div>
                                                     </div>
                                                     <div className="mt-auto pb-4">
                                                         <div className="h-10 bg-white border border-slate-200 rounded-xl flex items-center px-3 justify-between">
@@ -309,28 +388,32 @@ export default function LandingPage() {
                                                         <Zap className="w-4 h-4 text-indigo-600 fill-indigo-600" />
                                                         <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">Studio</span>
                                                     </div>
-                                                    {/* Mobile Studio Options Swapped */}
+                                                    
                                                     <div className="grid grid-cols-2 gap-2">
-                                                        <div className="flex flex-col gap-2">
-                                                            <div className="p-2 bg-white rounded-xl border border-indigo-100 flex flex-col items-center gap-1 shadow-sm">
-                                                                <Dices className="w-3.5 h-3.5 text-indigo-600" />
-                                                                <p className="text-[7px] font-black uppercase text-slate-900">Flashcard</p>
-                                                            </div>
-                                                            <div className="p-2 bg-white rounded-xl border border-slate-200 flex flex-col items-center gap-1 shadow-sm">
-                                                                <HelpCircle className="w-3.5 h-3.5 text-orange-500" />
-                                                                <p className="text-[7px] font-black uppercase text-slate-900">Quiz</p>
-                                                            </div>
+                                                        <div className="p-2 bg-white rounded-xl border border-slate-200 shadow-sm flex items-center gap-2">
+                                                            <Headphones className="w-3 h-3 text-emerald-500" />
+                                                            <span className="text-[8px] font-bold">Podcast</span>
                                                         </div>
-                                                        <div className="p-3 bg-white rounded-2xl border border-slate-200 flex flex-col items-center justify-center gap-2 shadow-sm">
-                                                            <Mic className="w-5 h-5 text-emerald-500" />
-                                                            <p className="text-[8px] font-black uppercase text-slate-900">Podcast</p>
+                                                        <div className="p-2 bg-white rounded-xl border border-slate-200 shadow-sm flex items-center gap-2">
+                                                            <Dices className="w-3 h-3 text-indigo-500" />
+                                                            <span className="text-[8px] font-bold">Cards</span>
                                                         </div>
-                                                    </div>
-                                                    <div className="p-5 bg-white rounded-3xl border-2 border-indigo-50 shadow-xl shadow-indigo-500/5 relative overflow-hidden">
-                                                        <div className="absolute top-0 left-0 w-1 h-full bg-indigo-600" />
-                                                        <p className="text-[9px] font-black text-indigo-600 uppercase mb-2">Active Flashcard</p>
-                                                        <p className="text-[11px] font-bold text-slate-800 leading-tight">"What is the primary mission of CodexLM?"</p>
-                                                        <div className="mt-4 p-2 bg-indigo-50 rounded-lg text-center"><p className="text-[8px] font-black text-indigo-500 uppercase tracking-widest">Tap to Flip</p></div>
+                                                        <div className="p-2 bg-white rounded-xl border border-slate-200 shadow-sm flex items-center gap-2">
+                                                            <HelpCircle className="w-3 h-3 text-rose-500" />
+                                                            <span className="text-[8px] font-bold">Quiz</span>
+                                                        </div>
+                                                        <div className="p-2 bg-white rounded-xl border border-slate-200 shadow-sm flex items-center gap-2">
+                                                            <Table className="w-3 h-3 text-blue-500" />
+                                                            <span className="text-[8px] font-bold">Data Table</span>
+                                                        </div>
+                                                        <div className="p-2 bg-white rounded-xl border border-slate-200 shadow-sm flex items-center gap-2">
+                                                            <Network className="w-3 h-3 text-indigo-600" />
+                                                            <span className="text-[8px] font-bold">Mind Map</span>
+                                                        </div>
+                                                        <div className="p-2 bg-white rounded-xl border border-slate-200 shadow-sm flex items-center gap-2">
+                                                            <Presentation className="w-3 h-3 text-orange-500" />
+                                                            <span className="text-[8px] font-bold">Slide Deck</span>
+                                                        </div>
                                                     </div>
                                                 </motion.div>
                                             )}

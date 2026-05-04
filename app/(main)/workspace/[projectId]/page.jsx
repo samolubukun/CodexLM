@@ -26,7 +26,7 @@ export default function Workspace({ params }) {
         <div className='flex h-full w-full bg-slate-50 dark:bg-slate-950 overflow-hidden'>
             {/* Left Panel: Sources / Source Viewer */}
             <div className={cn(
-                'border-r border-border bg-white dark:bg-slate-900 flex-shrink-0 relative overflow-hidden transition-all duration-300 w-[320px]'
+                'border-r border-border bg-white dark:bg-slate-900 flex-shrink-0 relative overflow-hidden transition-all duration-300 w-[340px]'
             )}>
                 {leftPanelTab === 'source' && selectedSourceId ? (
                     <SourceViewer 
@@ -48,7 +48,7 @@ export default function Workspace({ params }) {
             </div>
 
             {/* Center Panel: Chat */}
-            <div className='flex-1 flex flex-col min-w-0'>
+            <div className='flex-[1.2] flex flex-col min-w-0'>
                 <ChatPanel 
                     projectId={projectId}
                     selectedSourceId={selectedSourceId} 
