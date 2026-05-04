@@ -64,11 +64,12 @@ export default function SourceViewer({ sourceId, activePassage, onBack }) {
                                     key={chunk._id}
                                     ref={isActive ? activeRef : null}
                                     className={cn(
-                                        "text-sm leading-relaxed transition-all duration-500 p-4 rounded-xl whitespace-pre-wrap break-words",
+                                        "text-sm transition-all duration-500 p-4 rounded-xl whitespace-pre-wrap break-words",
                                         isActive 
                                             ? "bg-indigo-50 dark:bg-indigo-900/30 ring-1 ring-indigo-200 dark:ring-indigo-800 shadow-md scale-[1.02] z-10" 
                                             : "text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900/50"
                                     )}
+                                    style={{ lineHeight: '1.6' }}
                                 >
                                     {chunk.text}
                                     {chunk.pageNumber && (
