@@ -13,12 +13,12 @@ export default function Dashboard() {
     const [selectedSourceId, setSelectedSourceId] = useState(null);
     const [activePassage, setActivePassage] = useState(null);
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-    const [rightPanelTab, setRightPanelTab] = useState('studio'); // 'studio' or 'source'
+    const [leftPanelTab, setLeftPanelTab] = useState('list'); // 'list' or 'source'
 
     const handleCitationClick = (citation) => {
         setSelectedSourceId(citation.sourceId);
         setActivePassage(citation);
-        setRightPanelTab('source');
+        setLeftPanelTab('source');
     };
 
     return (
@@ -31,17 +31,28 @@ export default function Dashboard() {
                 setIsCollapsed={setIsSidebarCollapsed}
             />
 
-            {/* Left Panel: Sources */}
-            <div className='w-60 border-r border-border bg-white dark:bg-slate-900 flex-shrink-0'>
-                <SourcesPanel 
-                    projectId={selectedProjectId}
-                    onSourceSelect={(id) => {
-                        setSelectedSourceId(id);
-                        setRightPanelTab('source');
-                        setActivePassage(null);
-                    }} 
-                    selectedSourceId={selectedSourceId} 
-                />
+            {/* Left Panel: Sources / Source Viewer */}
+            <div className={cn(
+                'border-r border-border bg-white dark:bg-slate-900 flex-shrink-0 relative overflow-hidden transition-all duration-300',
+                isSidebarCollapsed ? 'w-[450px]' : 'w-[300px]'
+            )}>
+                {leftPanelTab === 'source' && selectedSourceId ? (
+                    <SourceViewer 
+                        sourceId={selectedSourceId}
+                        activePassage={activePassage}
+                        onBack={() => setLeftPanelTab('list')}
+                    />
+                ) : (
+                    <SourcesPanel 
+                        projectId={selectedProjectId}
+                        onSourceSelect={(id) => {
+                            setSelectedSourceId(id);
+                            setLeftPanelTab('source');
+                            setActivePassage(null);
+                        }} 
+                        selectedSourceId={selectedSourceId} 
+                    />
+                )}
             </div>
 
             {/* Center Panel: Chat */}
@@ -53,22 +64,14 @@ export default function Dashboard() {
                 />
             </div>
 
-            {/* Right Panel: Studio / Source Viewer */}
+            {/* Right Panel: Always StudioPanel */}
             <div className={cn(
                 'border-l border-border bg-white dark:bg-slate-900 flex-shrink-0 transition-all duration-300 overflow-hidden min-w-0',
                 isSidebarCollapsed ? 'flex-1' : 'w-96'
             )}>
-                {rightPanelTab === 'source' && selectedSourceId ? (
-                    <SourceViewer 
-                        sourceId={selectedSourceId}
-                        activePassage={activePassage}
-                        onBack={() => setRightPanelTab('studio')}
-                    />
-                ) : (
-                    <StudioPanel 
-                        projectId={selectedProjectId}
-                    />
-                )}
+                <StudioPanel 
+                    projectId={selectedProjectId}
+                />
             </div>
         </div>
     )
