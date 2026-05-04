@@ -8,7 +8,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useQuery, useMutation } from 'convex/react'
 import { api } from '@/convex/_generated/api'
 import { UserContext } from '@/app/_context/UserContext'
-import { Plus, Folder } from 'lucide-react'
+import { Plus, Layers } from 'lucide-react'
 import { CreateProjectModal } from '@/app/(main)/dashboard/_components/CreateProjectModal'
 import { toast } from 'sonner'
 import {
@@ -83,7 +83,7 @@ function AppHeader() {
                         >
                             <SelectTrigger className="w-[160px] sm:w-[200px] lg:w-[240px] bg-slate-100 dark:bg-slate-900 border-border hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors shadow-sm focus:ring-indigo-500 text-sm font-medium h-10">
                                 <div className="flex items-center gap-2 overflow-hidden">
-                                    <Folder className="w-4 h-4 text-slate-500 shrink-0" />
+                                    <Layers className="w-4 h-4 text-slate-500 shrink-0" />
                                     <span className="truncate">
                                         <SelectValue placeholder="Select Workspace" />
                                     </span>

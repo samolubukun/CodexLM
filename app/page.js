@@ -55,6 +55,11 @@ export default function LandingPage() {
             desc: "One workspace for everything you need to know. Seamlessly process PDFs, web articles, videos, and recordings into a single searchable library." 
         },
         { 
+            icon: Globe, 
+            title: "Live Knowledge Bridge", 
+            desc: "Stay current. Connect your local research with real-time web access to ensure your insights are backed by the most up-to-date information." 
+        },
+        { 
             icon: Bot, 
             title: "Deep Context Conversations", 
             desc: "Explore your documents through natural dialogue. Our workspace understands the nuances of your sources and provides direct citations for every claim." 
@@ -83,11 +88,6 @@ export default function LandingPage() {
             icon: Search, 
             title: "Precision Hybrid Search", 
             desc: "Find the needle in the haystack. We combine semantic understanding with exact matching to locate specific details across thousands of pages." 
-        },
-        { 
-            icon: Globe, 
-            title: "Live Knowledge Bridge", 
-            desc: "Stay current. Connect your local research with real-time web access to ensure your insights are backed by the most up-to-date information." 
         },
         { 
             icon: ShieldCheck, 
