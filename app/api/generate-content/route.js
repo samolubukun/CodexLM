@@ -64,7 +64,8 @@ export async function POST(req) {
             case 'diagram':
                 prompt = `Generate a Mermaid.js flowchart or sequence diagram that visualizes the processes or concepts described in the following context.
                 Instructions: ${instructions}
-                Return ONLY the mermaid code block (starting with graph TD or similar).
+                Return ONLY the mermaid code block (starting with graph TD or similar). 
+                CRITICAL: Use multiple lines and proper indentation for the mermaid syntax.
                 Context: ${context}`;
                 break;
             case 'slides':

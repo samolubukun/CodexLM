@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from 'react'
+import mermaid from 'mermaid'
 import { toast } from "sonner";
 import { 
     Dialog, 
@@ -195,6 +196,111 @@ const Flashcard = ({ question, answer }) => {
     );
 };
 
+function MermaidDiagram({ chart }) {
+    const ref = useRef(null);
+    const [svg, setSvg] = useState('');
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        if (chart) {
+            const renderDiagram = async () => {
+                try {
+                    mermaid.initialize({ 
+                        startOnLoad: false, 
+                        theme: 'base',
+                        themeVariables: {
+                            primaryColor: '#4f46e5',
+                            primaryTextColor: '#ffffff',
+                            primaryBorderColor: '#4338ca',
+                            lineColor: '#312e81', // Much darker indigo for lines
+                            secondaryColor: '#f5f3ff',
+                            tertiaryColor: '#ffffff',
+                            edgeLabelBackground: '#ffffff', // Force white background for labels
+                            nodeBorder: '#4f46e5',
+                            clusterBkg: '#f8fafc',
+                            clusterBorder: '#cbd5e1',
+                            fontSize: '13px',
+                            fontWeight: '700',
+                            fontFamily: 'Inter, system-ui, sans-serif'
+                        },
+                        flowchart: {
+                            htmlLabels: true,
+                            curve: 'basis',
+                            edgeAmount: 2 // Make lines slightly bolder
+                        },
+                        securityLevel: 'loose'
+                    });
+                    
+                    const id = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
+                    const { svg } = await mermaid.render(id, chart);
+                    setSvg(svg);
+                    setError(null);
+                } catch (err) {
+                    console.error("Mermaid render error:", err);
+                    setError(err.message || "Failed to render diagram. Please try generating again.");
+                }
+            };
+            renderDiagram();
+        }
+    }, [chart]);
+
+    if (error) {
+        return (
+            <div className="p-8 bg-red-50 dark:bg-red-950/20 rounded-[2rem] border border-red-100 dark:border-red-900/50 text-center">
+                <p className="text-sm text-red-600 dark:text-red-400 font-medium">{error}</p>
+            </div>
+        );
+    }
+
+    return (
+        <div className="flex justify-center p-8 bg-white dark:bg-slate-50 rounded-[2.5rem] border border-border shadow-sm overflow-x-auto min-h-[300px] items-center">
+            <style dangerouslySetInnerHTML={{ __html: `
+                .mermaid-svg-container .edgePath path {
+                    stroke-width: 2.5px !important;
+                    stroke: #312e81 !important;
+                }
+                .mermaid-svg-container .edgeLabel {
+                    color: #1e293b !important;
+                    font-weight: 800 !important;
+                    padding: 4px !important;
+                    background-color: white !important;
+                    border-radius: 4px !important;
+                }
+                .mermaid-svg-container .node rect, 
+                .mermaid-svg-container .node polygon, 
+                .mermaid-svg-container .node circle,
+                .mermaid-svg-container .node path {
+                    stroke-width: 2px !important;
+                }
+                .mermaid-svg-container .node .label {
+                    padding: 12px 20px !important;
+                    display: block !important;
+                }
+                .mermaid-svg-container foreignObject {
+                    overflow: visible !important;
+                }
+                .mermaid-svg-container .cluster rect {
+                    stroke-width: 1px !important;
+                    stroke: #e2e8f0 !important;
+                    fill: #f8fafc !important;
+                }
+                .mermaid-svg-container .cluster .label {
+                    transform: translateY(-20px) !important;
+                    font-weight: 900 !important;
+                    text-transform: uppercase !important;
+                    letter-spacing: 0.15em !important;
+                    font-size: 11px !important;
+                    color: #475569 !important;
+                }
+            `}} />
+            <div 
+                className="w-full flex justify-center mermaid-svg-container"
+                dangerouslySetInnerHTML={{ __html: svg }}
+            />
+        </div>
+    );
+}
+
 export default function StudioPanel({ projectId }) {
     const [isGenerating, setIsGenerating] = useState(false);
     const [result, setResult] = useState(null);
@@ -299,6 +405,50 @@ export default function StudioPanel({ projectId }) {
 
     const renderResult = (inModal = false) => {
         if (!result) return null;
+
+        // NEW: Compact "Mini Card" for Sidebar (reverting from the big placeholder)
+        if (!inModal && !isInteractiveType(activeType)) {
+            return (
+                <div className="space-y-3 pt-1">
+                    <div className="p-3.5 bg-gradient-to-r from-indigo-600 to-indigo-700 rounded-2xl text-white shadow-lg shadow-indigo-500/10 border border-indigo-400/20 group cursor-pointer transition-all hover:scale-[1.01]"
+                         onClick={() => setIsResultModalOpen(true)}>
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                                    <Zap className="w-4 h-4 text-white" />
+                                </div>
+                                <div>
+                                    <h4 className="text-[9px] font-black uppercase tracking-[0.2em] text-white/60 mb-0">Studio</h4>
+                                    <p className="text-xs font-bold text-white capitalize">{activeType} Ready</p>
+                                </div>
+                            </div>
+                            <Button 
+                                size="sm"
+                                className="bg-white text-indigo-600 hover:bg-indigo-50 rounded-lg px-3 text-[9px] font-black uppercase tracking-widest h-7"
+                            >
+                                View
+                            </Button>
+                        </div>
+                    </div>
+                    
+                    <div className="p-4 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-dashed border-border flex flex-col items-center justify-center text-center">
+                        <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest leading-relaxed">
+                            Click to open dashboard.
+                        </p>
+                    </div>
+                </div>
+            );
+        }
+
+        // Clean up display content: strip any code block wrappers
+        let cleanContent = typeof result === 'string' ? result : (result.content || JSON.stringify(result, null, 2));
+        if (typeof cleanContent === 'string') {
+            // Remove ```markdown, ```mermaid, etc. and the closing ```
+            cleanContent = cleanContent
+                .replace(/^```[a-zA-Z]*\s*/, '')
+                .replace(/\s*```$/, '')
+                .trim();
+        }
 
         const sidebarHeader = !inModal && isInteractiveType(activeType) && (
             <div className="flex items-center justify-end mb-4">
@@ -623,11 +773,22 @@ export default function StudioPanel({ projectId }) {
             );
         }
 
-        // Case 6: Simple string or object with content (fallback)
-        let cleanContent = typeof result === 'string' ? result : (result.content || JSON.stringify(result, null, 2));
-        if (typeof cleanContent === 'string') {
-            cleanContent = cleanContent.replace(/^```markdown\n/, '').replace(/^```\n/, '').replace(/\n```$/, '');
+        // Case 6: Diagram
+        if (activeType === 'diagram' && typeof cleanContent === 'string') {
+            return (
+                <div className="space-y-8 pb-10">
+                    {sidebarHeader}
+                    <div className="p-8 bg-indigo-600 rounded-[2.5rem] text-white shadow-xl shadow-indigo-500/20">
+                        <span className="px-3 py-1 bg-white/20 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 inline-block">Visual Flow Diagram</span>
+                        <h4 className="text-2xl font-black mb-2 leading-tight">Process Visualization</h4>
+                        <p className="text-white/70 text-xs font-medium">Auto-generated roadmap of your project's architecture.</p>
+                    </div>
+                    <MermaidDiagram chart={cleanContent} />
+                </div>
+            );
         }
+
+        // Case 7: Simple string or object with content (fallback)
         
         const handleExportPDF = () => {
             const printWindow = window.open('', '_blank');
