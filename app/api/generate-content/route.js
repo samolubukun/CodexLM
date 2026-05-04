@@ -58,8 +58,13 @@ export async function POST(req) {
                 Context: ${context}`;
                 break;
             case 'marketing':
-                prompt = `Generate a marketing campaign pack including 3 Twitter posts, 1 LinkedIn post, and 1 Email template based on the following context.
-                Format: Markdown.
+                prompt = `Generate a marketing campaign pack based on the following context. 
+                Return the result as a JSON object with:
+                - "targetAudience": string
+                - "campaignGoal": string
+                - "twitter": array of strings (3 posts)
+                - "linkedin": string (long post)
+                - "email": { "subject": string, "body": string }
                 Context: ${context}`;
                 break;
             default:
@@ -70,9 +75,9 @@ export async function POST(req) {
         let output = result.response.text();
 
         // If it's supposed to be JSON, try to parse it (minimal cleanup)
-        if (['flashcards', 'quiz', 'slides'].includes(type)) {
+        if (['flashcards', 'quiz', 'slides', 'marketing'].includes(type)) {
             try {
-                const jsonMatch = output.match(/\[[\s\S]*\]/);
+                const jsonMatch = output.match(/[\[\{][\s\S]*[\]\}]/);
                 if (jsonMatch) output = JSON.parse(jsonMatch[0]);
             } catch (e) {
                 console.error("Failed to parse JSON output", e);

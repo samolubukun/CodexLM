@@ -450,7 +450,74 @@ export default function StudioPanel({ projectId }) {
             );
         }
 
-        // Case 3: Simple string or object with content (PRD, Marketing, etc)
+        // Case 3: Marketing Social Pack
+        if (activeType === 'marketing' && typeof result === 'object' && !Array.isArray(result)) {
+            return (
+                <div className="space-y-8 pb-10">
+                    {sidebarHeader}
+                    
+                    {/* Strategy Header */}
+                    <div className="p-6 bg-indigo-600 rounded-3xl text-white shadow-xl shadow-indigo-500/20">
+                        <div className="flex items-center gap-2 mb-4">
+                            <span className="px-2 py-0.5 bg-white/20 rounded text-[9px] font-black uppercase tracking-widest">Campaign Strategy</span>
+                        </div>
+                        <h4 className="text-xl font-black mb-2 leading-tight">{result.campaignGoal}</h4>
+                        <p className="text-white/70 text-xs font-medium">Target: {result.targetAudience}</p>
+                    </div>
+
+                    {/* Twitter Section */}
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-2 px-1">
+                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Twitter Posts</span>
+                        </div>
+                        <div className="grid grid-cols-1 gap-4">
+                            {result.twitter?.map((post, i) => (
+                                <div key={i} className="p-5 bg-white dark:bg-slate-800 rounded-2xl border border-border shadow-sm hover:border-blue-400 transition-colors">
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <div className="w-6 h-6 bg-slate-100 dark:bg-slate-700 rounded-full" />
+                                        <div className="flex flex-col">
+                                            <span className="text-[10px] font-bold">Post {i+1}</span>
+                                        </div>
+                                    </div>
+                                    <p className="text-sm text-slate-700 dark:text-slate-200 leading-relaxed">{post}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* LinkedIn Section */}
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-2 px-1">
+                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">LinkedIn Post</span>
+                        </div>
+                        <div className="p-6 bg-white dark:bg-slate-800 rounded-2xl border border-border shadow-sm">
+                            <div className="text-sm text-slate-700 dark:text-slate-200 leading-relaxed prose-p:mb-4">
+                                <ReactMarkdown>{result.linkedin}</ReactMarkdown>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Email Section */}
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-2 px-1">
+                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Email Template</span>
+                        </div>
+                        <div className="bg-white dark:bg-slate-800 rounded-2xl border border-border shadow-sm overflow-hidden">
+                            <div className="px-6 py-3 bg-slate-50 dark:bg-slate-900 border-b border-border">
+                                <p className="text-[10px] font-bold text-slate-400"><span className="text-slate-500 mr-2 uppercase tracking-widest">Subject:</span> {result.email?.subject}</p>
+                            </div>
+                            <div className="p-6">
+                                <div className="text-sm text-slate-700 dark:text-slate-200 leading-relaxed whitespace-pre-wrap">
+                                    <ReactMarkdown>{result.email?.body}</ReactMarkdown>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Case 4: Simple string or object with content (PRD, Marketing markdown, etc)
         const displayContent = typeof result === 'string' ? result : (result.content || JSON.stringify(result, null, 2));
         
         const handleExportPDF = () => {
