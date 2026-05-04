@@ -98,9 +98,40 @@ body {
 
 .glass-card:hover {
   background: rgba(255, 255, 255, 0.6);
-  border-color: var(--premium-indigo);
-  transform: translateY(-4px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px -8px rgba(79, 70, 229, 0.1);
+}
+
+/* Premium Sleek Scrollbar */
+.sleek-scroll::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+
+.sleek-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sleek-scroll::-webkit-scrollbar-thumb {
+  background: rgba(79, 70, 229, 0.15);
+  border-radius: 20px;
+  transition: background 0.3s ease;
+}
+
+.sleek-scroll:hover::-webkit-scrollbar-thumb {
+  background: rgba(79, 70, 229, 0.35);
+}
+
+.sleek-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(79, 70, 229, 0.5);
+}
+
+.dark .sleek-scroll::-webkit-scrollbar-thumb {
+  background: rgba(129, 140, 248, 0.1);
+}
+
+.dark .sleek-scroll:hover::-webkit-scrollbar-thumb {
+  background: rgba(129, 140, 248, 0.3);
 }
 
 .text-gradient {

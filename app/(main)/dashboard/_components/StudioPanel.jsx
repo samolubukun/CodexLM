@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
 import { 
     Play, Download, Wand2, Mic, Headphones, GraduationCap, 
     FileText, Share2, Palette, Presentation, Plus, 
-    Check, Loader2, Zap, ChevronLeft, ChevronRight, CheckCircle2, Pause, Trash2, ChevronDown, ChevronUp
+    Check, Loader2, Zap, ChevronLeft, ChevronRight, CheckCircle2, Pause, Trash2, ChevronDown, ChevronUp, ZoomIn, ZoomOut, Maximize
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -24,6 +24,7 @@ import { useQuery, useMutation } from "convex/react"
 import { api } from "@/convex/_generated/api"
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 function AudioVisualizer({ src }) {
     const audioRef = useRef(null);
@@ -253,7 +254,7 @@ function MermaidDiagram({ chart }) {
     }
 
     return (
-        <div className="flex justify-center p-8 bg-white dark:bg-slate-50 rounded-[2.5rem] border border-border shadow-sm overflow-x-auto min-h-[300px] items-center">
+        <div className="flex justify-center p-0 bg-white dark:bg-slate-50 rounded-[2.5rem] border border-border shadow-sm overflow-hidden h-[500px] w-full relative group touch-none">
             <style dangerouslySetInnerHTML={{ __html: `
                 .mermaid-svg-container .edgePath path {
                     stroke-width: 2.5px !important;
@@ -293,10 +294,59 @@ function MermaidDiagram({ chart }) {
                     color: #475569 !important;
                 }
             `}} />
-            <div 
-                className="w-full flex justify-center mermaid-svg-container"
-                dangerouslySetInnerHTML={{ __html: svg }}
-            />
+            
+            <TransformWrapper
+                initialScale={1.35}
+                minScale={0.1}
+                maxScale={4}
+                centerOnInit={true}
+                limitToBounds={false}
+                wheel={{ step: 0.1, activationKeys: ["Control"] }}
+                pinch={{ disabled: false }}
+                doubleClick={{ disabled: true }}
+            >
+                {({ zoomIn, zoomOut, resetTransform }) => (
+                    <>
+                        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-all duration-300 bg-white/90 dark:bg-slate-900/90 p-1.5 rounded-full backdrop-blur-md border border-slate-200 dark:border-slate-800 shadow-xl">
+                            <Button 
+                                variant="ghost" 
+                                size="icon" 
+                                className="w-10 h-10 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300"
+                                onClick={() => zoomOut()}
+                                title="Zoom Out"
+                            >
+                                <ZoomOut className="w-4 h-4" />
+                            </Button>
+                            <div className="w-px h-5 bg-slate-200 dark:bg-slate-700" />
+                            <Button 
+                                variant="ghost" 
+                                size="icon" 
+                                className="w-10 h-10 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300"
+                                onClick={() => resetTransform()}
+                                title="Reset View"
+                            >
+                                <Maximize className="w-4 h-4" />
+                            </Button>
+                            <div className="w-px h-5 bg-slate-200 dark:bg-slate-700" />
+                            <Button 
+                                variant="ghost" 
+                                size="icon" 
+                                className="w-10 h-10 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300"
+                                onClick={() => zoomIn()}
+                                title="Zoom In"
+                            >
+                                <ZoomIn className="w-4 h-4" />
+                            </Button>
+                        </div>
+                        <TransformComponent wrapperClass="!w-full !h-full flex items-center justify-center cursor-grab active:cursor-grabbing" contentClass="w-full h-full flex items-center justify-center">
+                            <div 
+                                className="w-full h-full flex justify-center items-center mermaid-svg-container p-10 pointer-events-none"
+                                dangerouslySetInnerHTML={{ __html: svg }}
+                            />
+                        </TransformComponent>
+                    </>
+                )}
+            </TransformWrapper>
         </div>
     );
 }
@@ -405,6 +455,137 @@ function SlideViewer({ data }) {
     );
 }
 
+function InfographicViewer({ data }) {
+    return (
+        <div className="space-y-6 pb-12 max-w-6xl mx-auto animate-in fade-in duration-700">
+            {/* High-Info Header Section */}
+            <div className="p-8 bg-[#1e1b4b] rounded-[2.5rem] text-white shadow-2xl relative overflow-hidden border border-indigo-500/20">
+                <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    <div className="lg:col-span-7 space-y-4">
+                        <div className="flex items-center gap-3">
+                            <span className="px-2.5 py-1 bg-indigo-500/30 border border-indigo-400/30 rounded-lg text-[9px] font-black uppercase tracking-[0.2em]">Intelligence Synthesis</span>
+                            <div className="h-px flex-1 bg-gradient-to-r from-indigo-500/50 to-transparent" />
+                        </div>
+                        <h4 className="text-3xl font-black leading-[1.1] tracking-tight max-w-xl">{data.title}</h4>
+                        <p className="text-indigo-200/70 text-xs font-medium leading-relaxed max-w-lg">{data.mainGoal}</p>
+                    </div>
+                    
+                    {/* Stats Grid - Now wraps correctly */}
+                    <div className="lg:col-span-5 grid grid-cols-2 gap-3 overflow-x-auto sleek-scroll">
+                        {data.stats?.slice(0, 4).map((stat, i) => (
+                            <div key={i} className="bg-white/5 backdrop-blur-xl p-4 rounded-2xl border border-white/10 flex flex-col justify-between h-24">
+                                <p className="text-[8px] font-black uppercase tracking-widest text-indigo-300 leading-none">{stat.label}</p>
+                                <p className="text-lg font-black text-white mt-1">{stat.value}</p>
+                                <div className="h-1 w-8 bg-indigo-500 rounded-full mt-2" />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                {/* Visual texture */}
+                <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-600/10 blur-[120px] rounded-full -mr-48 -mt-48" />
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Column 1: Core Insights */}
+                <div className="lg:col-span-2 space-y-6">
+                    <div className="p-8 bg-white dark:bg-slate-900 rounded-[2.5rem] border border-border shadow-sm">
+                        <div className="flex items-center gap-3 mb-8">
+                            <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center text-white">
+                                <Zap className="w-4 h-4" />
+                            </div>
+                            <h5 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Critical Analysis & Takeaways</h5>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                            {data.keyTakeaways?.map((item, i) => (
+                                <div key={i} className="flex gap-4 group">
+                                    <div className="mt-1 w-1.5 h-1.5 rounded-full bg-indigo-600 shrink-0 group-hover:scale-150 transition-all" />
+                                    <p className="text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed font-medium">{item}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* New Info Section: Action Items */}
+                    <div className="p-8 bg-emerald-50/50 dark:bg-emerald-950/10 rounded-[2.5rem] border border-emerald-100 dark:border-emerald-900/30">
+                        <h5 className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-600 mb-6">Actionable Next Steps</h5>
+                        <div className="flex flex-wrap gap-3">
+                            {data.timeline?.map((step, i) => (
+                                <div key={i} className="px-5 py-3 bg-white dark:bg-slate-800 rounded-2xl border border-emerald-200 dark:border-emerald-800/50 flex items-center gap-3">
+                                    <span className="text-[10px] font-black text-emerald-600">{i+1}</span>
+                                    <span className="text-xs font-bold text-slate-700 dark:text-slate-200">{step.stage}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Column 2: Detailed Process / Specs */}
+                <div className="p-8 bg-slate-50 dark:bg-slate-900/50 rounded-[2.5rem] border border-border">
+                    <h5 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-8">Structural Roadmap</h5>
+                    <div className="space-y-8 relative">
+                        <div className="absolute left-[11px] top-2 bottom-2 w-px bg-slate-200 dark:bg-slate-800" />
+                        {data.timeline?.map((step, i) => (
+                            <div key={i} className="flex gap-6 relative">
+                                <div className="w-[23px] h-[23px] rounded-full bg-white dark:bg-slate-800 border-2 border-indigo-600 flex items-center justify-center text-[9px] font-black z-10 shrink-0">
+                                    {i+1}
+                                </div>
+                                <div className="space-y-1.5 pt-0.5">
+                                    <p className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-tight">{step.stage}</p>
+                                    <p className="text-[11px] text-slate-500 leading-relaxed font-medium">{step.description}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function DataTableViewer({ data }) {
+    return (
+        <div className="space-y-8 pb-10">
+            <div className="p-8 bg-white dark:bg-slate-900 rounded-[2.5rem] border border-border shadow-sm overflow-hidden">
+                <div className="flex items-center justify-between mb-8">
+                    <div className="space-y-1">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-indigo-600">Dataset Extraction</span>
+                        <h4 className="text-2xl font-black text-slate-900 dark:text-white">{data.title}</h4>
+                    </div>
+                    <Button variant="outline" size="sm" className="rounded-xl text-[10px] font-black uppercase tracking-widest h-8">
+                        <Download className="w-3 h-3 mr-2" />
+                        Download CSV
+                    </Button>
+                </div>
+
+                <div className="overflow-x-auto rounded-2xl border border-border sleek-scroll">
+                    <table className="w-full text-left border-collapse">
+                        <thead>
+                            <tr className="bg-slate-50 dark:bg-slate-800/50">
+                                {data.columns?.map((col, i) => (
+                                    <th key={i} className="p-4 text-[10px] font-black uppercase tracking-widest text-slate-500 border-b border-border">
+                                        {col}
+                                    </th>
+                                ))}
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-border">
+                            {data.rows?.map((row, i) => (
+                                <tr key={i} className="hover:bg-indigo-50/30 dark:hover:bg-indigo-900/10 transition-colors group">
+                                    {data.columns?.map((col, j) => (
+                                        <td key={j} className="p-4 text-xs font-medium text-slate-600 dark:text-slate-300">
+                                            {row[col]}
+                                        </td>
+                                    ))}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    );
+}
+
 export default function StudioPanel({ projectId }) {
     const [isGenerating, setIsGenerating] = useState(false);
     const [result, setResult] = useState(null);
@@ -440,9 +621,9 @@ export default function StudioPanel({ projectId }) {
     const categories = [
         { id: 'audio', name: 'Audio', icon: Headphones, items: [{id: 'podcast', name: 'Podcast Overview'}] },
         { id: 'learning', name: 'Learning', icon: GraduationCap, items: [{id: 'flashcards', name: 'Flash Cards'}, {id: 'quiz', name: 'Interactive Quiz'}] },
-        { id: 'docs', name: 'Documents', icon: FileText, items: [{id: 'prd', name: 'PRD Draft'}, {id: 'report', name: 'Business Report'}] },
-        { id: 'marketing', name: 'Marketing', icon: Share2, items: [{id: 'marketing', name: 'Social Pack'}] },
-        { id: 'design', name: 'Design', icon: Palette, items: [{id: 'diagram', name: 'Flow Diagram'}] },
+        { id: 'docs', name: 'Documents', icon: FileText, items: [{id: 'prd', name: 'PRD Draft'}, {id: 'report', name: 'Business Report'}, {id: 'table', name: 'Data Table'}] },
+        { id: 'marketing', name: 'Marketing', icon: Share2, items: [{id: 'marketing', name: 'Social Pack'}, {id: 'infographic', name: 'Infographic'}] },
+        { id: 'design', name: 'Design', icon: Palette, items: [{id: 'diagram', name: 'Flow Diagram'}, {id: 'mindmap', name: 'Mind Map'}] },
         { id: 'slides', name: 'Presentations', icon: Presentation, items: [{id: 'slides', name: 'Slide Deck'}] },
     ];
 
@@ -547,11 +728,17 @@ export default function StudioPanel({ projectId }) {
         // Clean up display content: strip any code block wrappers
         let cleanContent = typeof result === 'string' ? result : (result.content || JSON.stringify(result, null, 2));
         if (typeof cleanContent === 'string') {
-            // Remove ```markdown, ```mermaid, etc. and the closing ```
-            cleanContent = cleanContent
-                .replace(/^```[a-zA-Z]*\s*/, '')
-                .replace(/\s*```$/, '')
-                .trim();
+            // First try to extract just the mermaid block if it exists
+            const mermaidMatch = cleanContent.match(/```(?:mermaid)?\s*\n([\s\S]*?)\n```/);
+            if (mermaidMatch) {
+                cleanContent = mermaidMatch[1].trim();
+            } else {
+                // Fallback to original replacement logic
+                cleanContent = cleanContent
+                    .replace(/^```[a-zA-Z]*\s*/, '')
+                    .replace(/\s*```$/, '')
+                    .trim();
+            }
         }
 
         const sidebarHeader = !inModal && isInteractiveType(activeType) && (
@@ -890,17 +1077,41 @@ export default function StudioPanel({ projectId }) {
             );
         }
 
-        // Case 6: Diagram
-        if (activeType === 'diagram' && typeof cleanContent === 'string') {
+        // Case 6: Diagram & Mindmap
+        if ((activeType === 'diagram' || activeType === 'mindmap') && typeof cleanContent === 'string') {
             return (
                 <div className="space-y-8 pb-10">
                     {sidebarHeader}
                     <div className="p-8 bg-indigo-600 rounded-[2.5rem] text-white shadow-xl shadow-indigo-500/20">
-                        <span className="px-3 py-1 bg-white/20 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 inline-block">Visual Flow Diagram</span>
-                        <h4 className="text-2xl font-black mb-2 leading-tight">Process Visualization</h4>
-                        <p className="text-white/70 text-xs font-medium">Auto-generated roadmap of your project's architecture.</p>
+                        <span className="px-3 py-1 bg-white/20 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 inline-block">
+                            {activeType === 'mindmap' ? 'Visual Mind Map' : 'Visual Flow Diagram'}
+                        </span>
+                        <h4 className="text-2xl font-black mb-2 leading-tight">
+                            {activeType === 'mindmap' ? 'Theme Architecture' : 'Process Visualization'}
+                        </h4>
+                        <p className="text-white/70 text-xs font-medium">Auto-generated visualization of your research context.</p>
                     </div>
                     <MermaidDiagram chart={cleanContent} />
+                </div>
+            );
+        }
+
+        // Case 9: Infographic
+        if (activeType === 'infographic' && typeof result === 'object' && !Array.isArray(result)) {
+            return (
+                <div className="space-y-8 pb-10">
+                    {sidebarHeader}
+                    <InfographicViewer data={result} />
+                </div>
+            );
+        }
+
+        // Case 10: Data Table
+        if (activeType === 'table' && typeof result === 'object' && !Array.isArray(result)) {
+            return (
+                <div className="space-y-8 pb-10">
+                    {sidebarHeader}
+                    <DataTableViewer data={result} />
                 </div>
             );
         }

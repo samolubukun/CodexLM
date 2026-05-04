@@ -68,6 +68,38 @@ export async function POST(req) {
                 CRITICAL: Use multiple lines and proper indentation for the mermaid syntax.
                 Context: ${context}`;
                 break;
+            case 'mindmap':
+                prompt = `Generate a Mermaid.js mindmap that provides a comprehensive, glanceable overview of the provided context.
+                Content Instructions:
+                - Identify the single core topic or thesis as the root node.
+                - Branch out into the major themes, chapters, or high-level arguments.
+                - Add sub-branches that drill down into crucial details, facts, and supporting evidence.
+                - Focus on mapping the landscape of the document so the user can instantly understand how concepts relate to one another.
+                
+                CRITICAL INSTRUCTIONS FOR MERMAID SYNTAX:
+                1. Start with "mindmap" on the first line.
+                2. Use indentation (spaces) to show hierarchy.
+                3. Do NOT use multiple strings or words separated by space on the same line if they are meant to be separate nodes. Each node MUST be on its own line.
+                4. Keep node text simple, avoid special characters or excessive punctuation.
+                5. Do NOT include any explanations, return ONLY the mermaid code block.
+                Context: ${context}`;
+                break;
+            case 'infographic':
+                prompt = `Generate a visual infographic summary. Return a JSON object with:
+                - "title": string
+                - "mainGoal": string
+                - "stats": array of { "label": string, "value": string, "icon": string }
+                - "keyTakeaways": array of strings
+                - "timeline": array of { "stage": string, "description": string }
+                Context: ${context}`;
+                break;
+            case 'table':
+                prompt = `Generate a comprehensive data table. Return a JSON object with:
+                - "title": string
+                - "columns": array of strings
+                - "rows": array of objects matching columns
+                Context: ${context}`;
+                break;
             case 'slides':
                 prompt = `Generate a slide deck outline (6-8 slides) based on the following context.
                 Return the result as a JSON array of objects with 'title' and 'content' (bullet points) fields.
@@ -91,7 +123,7 @@ export async function POST(req) {
         let output = result.response.text();
 
         // If it's supposed to be JSON, try to parse it (minimal cleanup)
-        if (['flashcards', 'quiz', 'slides', 'marketing', 'prd', 'report'].includes(type)) {
+        if (['flashcards', 'quiz', 'slides', 'marketing', 'prd', 'report', 'infographic', 'table'].includes(type)) {
             try {
                 const jsonMatch = output.match(/[\[\{][\s\S]*[\]\}]/);
                 if (jsonMatch) output = JSON.parse(jsonMatch[0]);
