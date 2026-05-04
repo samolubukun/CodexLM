@@ -41,9 +41,24 @@ export async function POST(req) {
                 Context: ${context}`;
                 break;
             case 'prd':
-                prompt = `Generate a professional Product Requirement Document (PRD) based on the following context and instructions.
-                Instructions: ${instructions}
-                Format: Markdown.
+                prompt = `Generate a professional Product Requirement Document (PRD) based on the following context.
+                Return the result as a JSON object with:
+                - "title": string
+                - "overview": string
+                - "targetAudience": string
+                - "userStories": array of strings
+                - "keyFeatures": array of { "feature": string, "description": string }
+                - "successMetrics": array of strings
+                Context: ${context}`;
+                break;
+            case 'report':
+                prompt = `Generate a comprehensive Business Report based on the following context.
+                Return the result as a JSON object with:
+                - "title": string
+                - "executiveSummary": string
+                - "keyAnalysis": array of { "point": string, "detail": string }
+                - "recommendations": array of strings
+                - "conclusion": string
                 Context: ${context}`;
                 break;
             case 'diagram':
@@ -75,7 +90,7 @@ export async function POST(req) {
         let output = result.response.text();
 
         // If it's supposed to be JSON, try to parse it (minimal cleanup)
-        if (['flashcards', 'quiz', 'slides', 'marketing'].includes(type)) {
+        if (['flashcards', 'quiz', 'slides', 'marketing', 'prd', 'report'].includes(type)) {
             try {
                 const jsonMatch = output.match(/[\[\{][\s\S]*[\]\}]/);
                 if (jsonMatch) output = JSON.parse(jsonMatch[0]);

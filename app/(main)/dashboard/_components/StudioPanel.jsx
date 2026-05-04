@@ -517,12 +517,121 @@ export default function StudioPanel({ projectId }) {
             );
         }
 
-        // Case 4: Simple string or object with content (PRD, Marketing markdown, etc)
-        const displayContent = typeof result === 'string' ? result : (result.content || JSON.stringify(result, null, 2));
+        // Case 4: Business Report Dashboard
+        if (activeType === 'report' && typeof result === 'object' && !Array.isArray(result)) {
+            return (
+                <div className="space-y-8 pb-10">
+                    {sidebarHeader}
+                    <div className="p-8 bg-slate-900 rounded-[2.5rem] text-white shadow-2xl relative overflow-hidden">
+                        <div className="relative z-10">
+                            <span className="px-3 py-1 bg-indigo-500 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 inline-block">Business Intelligence</span>
+                            <h4 className="text-3xl font-black mb-4 leading-tight">{result.title}</h4>
+                            <p className="text-white/60 text-sm leading-relaxed max-w-2xl">{result.executiveSummary}</p>
+                        </div>
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-600/20 blur-[100px] rounded-full -mr-20 -mt-20" />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {result.keyAnalysis?.map((item, i) => (
+                            <div key={i} className="p-6 bg-white dark:bg-slate-800 rounded-3xl border border-border shadow-sm">
+                                <h5 className="font-black text-indigo-600 uppercase tracking-tighter mb-2 text-sm">{item.point}</h5>
+                                <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">{item.detail}</p>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="p-8 bg-indigo-50 dark:bg-indigo-900/20 rounded-[2.5rem] border border-indigo-100 dark:border-indigo-800">
+                        <h5 className="text-xs font-black uppercase tracking-[0.2em] text-indigo-600 mb-6">Strategic Recommendations</h5>
+                        <div className="space-y-4">
+                            {result.recommendations?.map((rec, i) => (
+                                <div key={i} className="flex gap-4">
+                                    <div className="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-[10px] font-bold shrink-0">{i+1}</div>
+                                    <p className="text-sm text-slate-700 dark:text-slate-200 leading-relaxed">{rec}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="p-8 bg-white dark:bg-slate-800 rounded-[2.5rem] border border-border shadow-sm">
+                        <h5 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4 text-center">Final Conclusion</h5>
+                        <p className="text-center text-slate-600 dark:text-slate-300 leading-relaxed italic">"{result.conclusion}"</p>
+                    </div>
+                </div>
+            );
+        }
+
+        // Case 5: PRD Dashboard
+        if (activeType === 'prd' && typeof result === 'object' && !Array.isArray(result)) {
+            return (
+                <div className="space-y-8 pb-10">
+                    {sidebarHeader}
+                    <div className="p-8 bg-gradient-to-br from-indigo-600 to-violet-700 rounded-[2.5rem] text-white shadow-xl shadow-indigo-500/20">
+                        <span className="px-3 py-1 bg-white/20 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 inline-block">Product Requirement Document</span>
+                        <h4 className="text-3xl font-black mb-4 leading-tight">{result.title}</h4>
+                        <div className="flex flex-wrap gap-4 mt-6">
+                            <div className="bg-white/10 px-4 py-2 rounded-xl backdrop-blur-md">
+                                <p className="text-[8px] font-bold uppercase tracking-widest opacity-60">Target Audience</p>
+                                <p className="text-xs font-bold">{result.targetAudience}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="p-6 bg-slate-50 dark:bg-slate-900 rounded-3xl border border-border">
+                        <h5 className="text-xs font-black uppercase tracking-[0.2em] text-slate-400 mb-4">Product Overview</h5>
+                        <p className="text-sm text-slate-700 dark:text-slate-200 leading-relaxed">{result.overview}</p>
+                    </div>
+
+                    <div className="space-y-4">
+                        <h5 className="text-xs font-black uppercase tracking-[0.2em] text-indigo-600 px-2">Key Features</h5>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {result.keyFeatures?.map((feature, i) => (
+                                <div key={i} className="p-6 bg-white dark:bg-slate-800 rounded-3xl border border-border shadow-sm hover:border-indigo-400 transition-colors">
+                                    <div className="w-10 h-10 rounded-2xl bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center mb-4">
+                                        <Zap className="w-5 h-5 text-indigo-600" />
+                                    </div>
+                                    <h6 className="font-bold text-sm mb-2">{feature.feature}</h6>
+                                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">{feature.description}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="p-6 bg-emerald-50 dark:bg-emerald-950/20 rounded-3xl border border-emerald-100 dark:border-emerald-900/50">
+                            <h5 className="text-xs font-black uppercase tracking-[0.2em] text-emerald-600 mb-4">Success Metrics</h5>
+                            <ul className="space-y-2">
+                                {result.successMetrics?.map((metric, i) => (
+                                    <li key={i} className="flex items-center gap-2 text-xs text-emerald-700 dark:text-emerald-300">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                                        {metric}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                        <div className="p-6 bg-blue-50 dark:bg-blue-950/20 rounded-3xl border border-blue-100 dark:border-blue-900/50">
+                            <h5 className="text-xs font-black uppercase tracking-[0.2em] text-blue-600 mb-4">User Stories</h5>
+                            <ul className="space-y-2">
+                                {result.userStories?.map((story, i) => (
+                                    <li key={i} className="text-xs text-blue-700 dark:text-blue-300 leading-relaxed">
+                                        "As a user, I want to {story}"
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Case 6: Simple string or object with content (fallback)
+        let cleanContent = typeof result === 'string' ? result : (result.content || JSON.stringify(result, null, 2));
+        if (typeof cleanContent === 'string') {
+            cleanContent = cleanContent.replace(/^```markdown\n/, '').replace(/^```\n/, '').replace(/\n```$/, '');
+        }
         
         const handleExportPDF = () => {
             const printWindow = window.open('', '_blank');
-            const content = displayContent;
+            const content = cleanContent;
             
             printWindow.document.write(`
                 <html>
@@ -564,17 +673,17 @@ export default function StudioPanel({ projectId }) {
         };
 
         return (
-            <div className="bg-white dark:bg-slate-900 rounded-3xl border border-border/50 shadow-sm overflow-hidden w-full min-w-0">
+            <div className="bg-white dark:bg-slate-900 rounded-3xl border border-border/50 shadow-sm overflow-hidden w-full min-w-0 font-sans">
                 <div 
                     id="studio-result-content" 
-                    className="p-8 prose prose-slate dark:prose-invert max-w-none w-full min-w-0 overflow-x-hidden
-                        prose-headings:font-black prose-headings:tracking-tight prose-headings:break-words
+                    className="p-8 prose prose-slate dark:prose-invert max-w-none w-full min-w-0 overflow-x-hidden font-sans
+                        prose-headings:font-black prose-headings:tracking-tight prose-headings:break-words prose-headings:font-sans
                         prose-h1:text-3xl prose-h1:mb-6 prose-h1:border-b-4 prose-h1:border-indigo-600 prose-h1:pb-4
                         prose-h2:text-xl prose-h2:text-indigo-600 prose-h2:mt-10
-                        prose-p:leading-relaxed prose-p:text-slate-600 dark:prose-p:text-slate-300 prose-p:break-words
+                        prose-p:leading-relaxed prose-p:text-slate-600 dark:prose-p:text-slate-300 prose-p:break-words prose-p:font-sans
                         prose-table:block prose-table:overflow-x-auto prose-th:p-3 prose-td:p-3 prose-td:whitespace-normal"
                 >
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{displayContent}</ReactMarkdown>
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{cleanContent}</ReactMarkdown>
                 </div>
                 <div className="px-8 py-4 bg-slate-50 dark:bg-slate-800/50 border-t border-border/50 flex justify-end gap-3">
                     <Button 
@@ -582,7 +691,7 @@ export default function StudioPanel({ projectId }) {
                         size="sm" 
                         className="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-indigo-600 rounded-xl"
                         onClick={() => {
-                            const blob = new Blob([displayContent], { type: 'text/markdown' });
+                            const blob = new Blob([cleanContent], { type: 'text/markdown' });
                             const url = URL.createObjectURL(blob);
                             const a = document.createElement('a');
                             a.href = url;
