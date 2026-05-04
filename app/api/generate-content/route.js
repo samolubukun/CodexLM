@@ -62,10 +62,13 @@ export async function POST(req) {
                 Context: ${context}`;
                 break;
             case 'diagram':
-                prompt = `Generate a Mermaid.js flowchart or sequence diagram that visualizes the processes or concepts described in the following context.
+                prompt = `Generate a Mermaid.js flowchart or sequence diagram that visualizes the core processes or concepts described in the following context.
                 Instructions: ${instructions}
-                Return ONLY the mermaid code block (starting with graph TD or similar). 
-                CRITICAL: Use multiple lines and proper indentation for the mermaid syntax.
+                CRITICAL INSTRUCTIONS FOR MERMAID SYNTAX:
+                1. Return ONLY the mermaid code block (starting with graph TD or similar). 
+                2. Use multiple lines and proper indentation for the mermaid syntax.
+                3. LIMIT THE DIAGRAM TO A MAXIMUM OF 15-20 HIGH-IMPACT NODES. Focus on the most important structural elements. Do not overcomplicate it.
+                4. SAFE TEXT: Always wrap the text inside nodes with double quotes to prevent syntax errors caused by parentheses or special characters (e.g., A["Original Models (RNN)"] --> B{"Process Data"}).
                 Context: ${context}`;
                 break;
             case 'mindmap':
@@ -75,6 +78,7 @@ export async function POST(req) {
                 - Branch out into the major themes, chapters, or high-level arguments.
                 - Add sub-branches that drill down into crucial details, facts, and supporting evidence.
                 - Focus on mapping the landscape of the document so the user can instantly understand how concepts relate to one another.
+                - LIMIT THE MINDMAP TO A MAXIMUM OF 15-20 HIGH-IMPACT NODES. Synthesize and group ideas; do not create an overwhelming spiderweb of every minor detail.
                 
                 CRITICAL INSTRUCTIONS FOR MERMAID SYNTAX:
                 1. Start with "mindmap" on the first line.

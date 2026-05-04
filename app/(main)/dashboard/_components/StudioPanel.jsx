@@ -201,9 +201,11 @@ function MermaidDiagram({ chart }) {
     const ref = useRef(null);
     const [svg, setSvg] = useState('');
     const [error, setError] = useState(null);
+    const [isRendering, setIsRendering] = useState(true);
 
     useEffect(() => {
         if (chart) {
+            setIsRendering(true);
             const renderDiagram = async () => {
                 try {
                     mermaid.initialize({ 
@@ -239,9 +241,17 @@ function MermaidDiagram({ chart }) {
                 } catch (err) {
                     console.error("Mermaid render error:", err);
                     setError(err.message || "Failed to render diagram. Please try generating again.");
+                } finally {
+                    setIsRendering(false);
                 }
             };
-            renderDiagram();
+            
+            // Defer execution by 300ms to allow the UI/modal to animate in smoothly without dropping frames
+            const timer = setTimeout(() => {
+                renderDiagram();
+            }, 300);
+            
+            return () => clearTimeout(timer);
         }
     }, [chart]);
 
@@ -249,6 +259,15 @@ function MermaidDiagram({ chart }) {
         return (
             <div className="p-8 bg-red-50 dark:bg-red-950/20 rounded-[2rem] border border-red-100 dark:border-red-900/50 text-center">
                 <p className="text-sm text-red-600 dark:text-red-400 font-medium">{error}</p>
+            </div>
+        );
+    }
+
+    if (isRendering) {
+        return (
+            <div className="flex flex-col justify-center items-center p-0 bg-white dark:bg-slate-50 rounded-[2.5rem] border border-border shadow-sm h-[500px] w-full relative group">
+                <Loader2 className="w-10 h-10 text-indigo-600 animate-spin mb-4" />
+                <p className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] animate-pulse">Rendering Visualization...</p>
             </div>
         );
     }
