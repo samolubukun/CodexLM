@@ -11,6 +11,7 @@
 import type * as chunks from "../chunks.js";
 import type * as messages from "../messages.js";
 import type * as projects from "../projects.js";
+import type * as sourceDisplay from "../sourceDisplay.js";
 import type * as sources from "../sources.js";
 import type * as studio_jobs from "../studio_jobs.js";
 import type * as users from "../users.js";
@@ -25,6 +26,7 @@ declare const fullApi: ApiFromModules<{
   chunks: typeof chunks;
   messages: typeof messages;
   projects: typeof projects;
+  sourceDisplay: typeof sourceDisplay;
   sources: typeof sources;
   studio_jobs: typeof studio_jobs;
   users: typeof users;

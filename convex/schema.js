@@ -34,6 +34,12 @@ export default defineSchema({
         embeddingId: v.optional(v.string()), // Reference to Pinecone ID
     }).index("by_source", ["sourceId"]),
 
+    sourceDisplay: defineTable({
+        sourceId: v.id('sources'),
+        html: v.string(),        // Rendered HTML for the Source Viewer UI
+        pageCount: v.optional(v.number()), // For PDFs
+    }).index("by_source", ["sourceId"]),
+
     messages: defineTable({
         projectId: v.id('projects'),
         role: v.string(), // user, assistant, system

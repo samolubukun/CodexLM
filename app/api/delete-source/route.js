@@ -33,6 +33,14 @@ export async function POST(req) {
             console.error(`[Full Purge] Convex chunks deletion failed for ${sourceId}:`, error);
         }
 
+        // 3. Delete display HTML from Convex
+        try {
+            await convex.mutation(api.sourceDisplay.deleteBySource, { sourceId });
+            console.log(`[Full Purge] Convex sourceDisplay deleted for source: ${sourceId}`);
+        } catch (error) {
+            console.error(`[Full Purge] Convex sourceDisplay deletion failed for ${sourceId}:`, error);
+        }
+
         return NextResponse.json({ success: true });
     } catch (error) {
         console.error("[Full Purge] API Error:", error);

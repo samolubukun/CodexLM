@@ -37,7 +37,7 @@ export default function Dashboard() {
                     projectId={selectedProjectId}
                     onSourceSelect={(id) => {
                         setSelectedSourceId(id);
-                        // Removed setRightPanelTab('source') - only citations open the viewer now
+                        setRightPanelTab('source');
                         setActivePassage(null);
                     }} 
                     selectedSourceId={selectedSourceId} 
