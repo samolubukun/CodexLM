@@ -32,6 +32,24 @@ function buildChunkMap(chunks) {
 }
 
 /**
+ * Safe version of decodeURIComponent that won't crash on malformed data.
+ */
+function safeDecodeURIComponent(str) {
+    try {
+        return decodeURIComponent(str);
+    } catch (e) {
+        // Fallback: try to decode individual components or return as-is
+        return str.replace(/%([0-9A-F]{2})/gi, (match) => {
+            try {
+                return decodeURIComponent(match);
+            } catch (err) {
+                return match;
+            }
+        });
+    }
+}
+
+/**
  * Walks an HTML string and injects anchor spans at specific character offsets,
  * ignoring HTML tags when counting positions.
  */
@@ -89,7 +107,7 @@ async function processPdfUnified(buffer, chunks) {
                 const items = (page.Texts || []).map((t) => ({
                     x: t.x,
                     y: Math.round(t.y * 10),
-                    text: decodeURIComponent(t.R.map((r) => r.T).join("")),
+                    text: safeDecodeURIComponent(t.R.map((r) => r.T).join("")),
                 }));
 
                 const columns = [];

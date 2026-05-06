@@ -20,7 +20,7 @@ async function testModel(modelName) {
 }
 
 async function run() {
-    const models = ["gemini-2.5-flash-lite"];
+    const models = ["gemini-3.1-flash-lite-preview"];
     for (const m of models) {
         await testModel(m);
     }

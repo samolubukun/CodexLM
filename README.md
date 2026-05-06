@@ -59,7 +59,7 @@ Automatically constructs comprehensive assessments from ingested sources. Ideal 
 | Authentication | Stack Auth |
 | Vector Engine | Pinecone (Serverless) |
 | Audio Intelligence | Deepgram Aura-2 (TTS) and Nova-2 (STT) |
-| LLM Engine | Google Gemini 2.5 Flash Lite |
+| LLM Engine | Google Gemini 3.1 Flash Lite |
 | File Storage | DigitalOcean Spaces (S3-Compatible) |
 
 ## Installation and Setup

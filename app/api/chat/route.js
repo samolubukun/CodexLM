@@ -41,7 +41,7 @@ export async function POST(req) {
         }
 
         const model = genAI.getGenerativeModel({
-            model: "gemini-2.5-flash-lite",
+            model: "gemini-3.1-flash-lite-preview",
             tools: availableTools.length > 0 ? [{ functionDeclarations: availableTools }] : [],
             systemInstruction: `You are CodexLM, an elite research assistant. 
             PRIMARY MISSION: You must treat the user's uploaded documents as the absolute source of truth.
@@ -126,7 +126,7 @@ export async function POST(req) {
 
             if (lookupRes && lookupRes.response.content && lookupRes.response.content.trim().length > 50) {
                 // We have real document content — force Gemini to summarize it properly
-                const summaryModel = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
+                const summaryModel = genAI.getGenerativeModel({ model: "gemini-3.1-flash-lite-preview" });
                 const summaryResult = await summaryModel.generateContent(
                     `The user asked: "${lastMessage}"\n\nHere is the relevant content found in their documents:\n\n${lookupRes.response.content}\n\nPlease write a clear, concise answer based only on this content. Include citations like [1], [2] based on the "Source [n]" labels provided above.`
                 );

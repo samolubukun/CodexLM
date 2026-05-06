@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
   title: "CodexLM | The Agentic AI Research Platform",
-  description: "Upload sources, chat with deep context, and generate professional assets using Gemini 1.5 and RAG.",
+  description: "Upload sources, chat with deep context, and generate professional assets using Gemini 3.1 and RAG.",
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",
