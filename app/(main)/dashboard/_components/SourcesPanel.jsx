@@ -124,16 +124,36 @@ export default function SourcesPanel({ projectId, onSourceSelect, selectedSource
         if (!urlInput) return;
         
         const type = addType === 'youtube' ? 'youtube' : 'url';
-        await createSource({
-            projectId,
-            type,
-            name: urlInput,
-            url: urlInput,
-            status: "processed"
-        });
+        const toastId = toast.loading(`Adding ${type === 'youtube' ? 'YouTube link' : 'URL'}...`);
         
-        toast.success(`${type === 'youtube' ? 'YouTube link' : 'URL'} added!`);
-        setIsAddModalOpen(false);
+        try {
+            const sourceId = await createSource({
+                projectId,
+                type,
+                name: urlInput,
+                url: urlInput,
+                status: "processing"
+            });
+            
+            toast.success(`${type === 'youtube' ? 'YouTube link' : 'URL'} added!`, { id: toastId });
+            setIsAddModalOpen(false);
+
+            // Trigger RAG Pipeline
+            fetch("/api/process-source", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    sourceId,
+                    projectId,
+                    url: urlInput,
+                    type,
+                    sourceName: urlInput
+                })
+            });
+        } catch (error) {
+            console.error("Failed to add link:", error);
+            toast.error("Failed to add link source", { id: toastId });
+        }
     };
 
     const handleDeleteSource = async () => {

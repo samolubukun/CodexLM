@@ -10,6 +10,7 @@ import { ConvexHttpClient } from "convex/browser";
 import { api } from "@/convex/_generated/api";
 import { runWithConcurrency, withRetry } from "@/lib/concurrency";
 import PDFParser from "pdf2json";
+import { getYouTubeTranscript } from "@/lib/youtube";
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL);
 const deepgram = createClient(process.env.DEEPGRAM_API_KEY);
@@ -241,8 +242,11 @@ function escapeHtml(str) {
 // ─── Main Handler ────────────────────────────────────────────────────────────
 
 export async function POST(req) {
+    let sourceId;
     try {
-        const { sourceId, projectId, url, type, sourceName, textContent } = await req.json();
+        const body = await req.json();
+        sourceId = body.sourceId;
+        const { projectId, url, type, sourceName, textContent } = body;
 
         let extractedText = "";
         let _rawHtml = null;
@@ -272,6 +276,8 @@ export async function POST(req) {
                 { smart_format: true, model: "nova-2" }
             );
             extractedText = response.result?.results?.channels[0]?.alternatives[0]?.transcript || "";
+        } else if (type === "youtube") {
+            extractedText = await getYouTubeTranscript(url);
         } else if (type === "text") {
             extractedText = textContent;
         }
