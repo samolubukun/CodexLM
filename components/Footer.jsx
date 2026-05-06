@@ -8,7 +8,7 @@ export default function Footer() {
             <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12">
                 <div className="flex flex-col items-center md:items-start gap-4">
                     <Link href="/" className="flex flex-col items-center md:items-start gap-4">
-                        <Image src="/logo.png" alt="CodexLM Logo" width={48} height={48} className="w-12 h-12 object-contain" />
+                        <Image src="/logo.png" alt="CodexLM Logo" width={96} height={96} className="w-24 h-24 object-contain" />
                         <span className="text-2xl font-black tracking-tighter text-slate-900">
                             Codex<span className="text-indigo-600">LM</span>
                         </span>
@@ -40,6 +40,12 @@ export default function Footer() {
             </div>
             <div className="max-w-4xl mx-auto text-center mt-12 pt-12 border-t border-gray-50">
                 <p className="text-xs text-gray-300 font-medium uppercase tracking-[0.2em]">Next-Gen AI Research: Powered by CodexLM</p>
+                <p className="text-[10px] text-gray-400 mt-4 font-medium">
+                    Designed and developed by{" "}
+                    <a href="https://samuelolubukun.netlify.app/" target="_blank" rel="noopener noreferrer" className="text-indigo-500 hover:text-indigo-600 transition-colors">
+                        Samuel Olubukun
+                    </a>
+                </p>
             </div>
         </footer>
     );

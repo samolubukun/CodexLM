@@ -19,9 +19,9 @@ export const metadata = {
   title: "CodexLM | The Agentic AI Research Platform",
   description: "Upload sources, chat with deep context, and generate professional assets using Gemini 3.1 and RAG.",
   icons: {
-    icon: "/favicon.svg",
-    shortcut: "/favicon.svg",
-    apple: "/favicon.svg",
+    icon: "/logowhite.png",
+    shortcut: "/logowhite.png",
+    apple: "/logowhite.png",
   },
 };
 
