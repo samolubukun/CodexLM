@@ -254,8 +254,8 @@ export default function ChatPanel({ projectId, selectedSourceId, onCitationClick
     }
 
     return (
-        <div className="flex flex-col h-full bg-white dark:bg-slate-900">
-            <div className="p-4 border-b border-border flex items-center justify-between">
+        <div className="flex flex-col h-full bg-white dark:bg-slate-900 overflow-hidden w-full min-w-0">
+            <div className="p-3 sm:p-4 border-b border-border flex items-center justify-between shrink-0">
                 <div className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center">
                         <Bot className="w-5 h-5 text-white" />
@@ -267,8 +267,8 @@ export default function ChatPanel({ projectId, selectedSourceId, onCitationClick
                 </div>
             </div>
 
-            <ScrollArea ref={scrollRef} className="flex-1 p-4">
-                <div className="space-y-6 w-full max-w-4xl mx-auto px-2">
+            <ScrollArea ref={scrollRef} className="flex-1 w-full min-w-0">
+                <div className="space-y-6 w-full max-w-4xl mx-auto p-4 sm:p-6 pb-6 min-w-0">
                     {/* Merge DB messages with optimistic ones, avoiding duplicates */}
                     {[
                         ...messages,
@@ -276,77 +276,154 @@ export default function ChatPanel({ projectId, selectedSourceId, onCitationClick
                             !messages.some(m => m.role === om.role && m.content === om.content)
                         )
                     ].map((msg, i) => (
-                        <div key={i} className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''} w-full`}>
-                            <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${msg.role === 'user' ? 'bg-slate-200 dark:bg-slate-700' : 'bg-indigo-100 dark:bg-indigo-900/30'}`}>
-                                {msg.role === 'user' ? <User className="w-5 h-5 text-slate-600" /> : <Bot className="w-5 h-5 text-indigo-600" />}
-                            </div>
-                            <div className={`max-w-[85%] sm:max-w-[75%] rounded-2xl p-4 text-sm leading-relaxed break-words overflow-hidden ${
-                                msg.role === 'user' 
-                                ? 'bg-indigo-600 text-white rounded-tr-none shadow-md' 
-                                : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-tl-none shadow-sm border border-border/50'
-                            }`}>
-                                <TypewriterEffect 
-                                    text={msg.content} 
-                                    isNew={msg._id && msg._id.startsWith('temp')}
-                                >
-                                    {(text) => (
-                                        <ReactMarkdown 
-                                            components={{
-                                                p: ({node, children, ...props}) => (
-                                                    <p className="mb-3 last:mb-0" {...props}>
-                                                        {renderWithCitations(children, msg.citations, onCitationClick)}
-                                                    </p>
-                                                ),
-                                                li: ({node, children, ...props}) => (
-                                                    <li className="mb-1" {...props}>
-                                                        {renderWithCitations(children, msg.citations, onCitationClick)}
-                                                    </li>
-                                                ),
-                                                ul: ({node, ...props}) => <ul className="list-disc pl-4 mb-3 space-y-1" {...props} />,
-                                                ol: ({node, ...props}) => <ol className="list-decimal pl-4 mb-3 space-y-1" {...props} />,
-                                                strong: ({node, ...props}) => (
-                                                    <strong className={`font-bold ${msg.role === 'user' ? 'text-white underline decoration-white/30' : 'text-indigo-600 dark:text-indigo-400'}`} {...props} />
-                                                ),
-                                            }}
-                                        >
-                                            {text}
-                                        </ReactMarkdown>
-                                    )}
-                                </TypewriterEffect>
-                                
-                                {Array.isArray(msg.citations) && msg.citations.length > 0 && (
-                                    <div className="mt-3 pt-3 border-t border-black/10 dark:border-white/10 flex flex-wrap gap-2">
-                                        {/* Deduplicate citations by sourceId for the footer list */}
-                                        {msg.citations.reduce((unique, cit) => {
-                                            if (!unique.some(u => u.sourceId === cit.sourceId)) {
-                                                unique.push(cit);
-                                            }
-                                            return unique;
-                                        }, []).map((cit, idx) => (
-                                            <span 
-                                                key={idx} 
-                                                onClick={() => onCitationClick?.(cit)}
-                                                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black/5 dark:bg-white/5 text-[10px] font-bold text-slate-600 dark:text-slate-400 cursor-pointer hover:bg-black/10 dark:hover:bg-white/10 transition-colors border border-black/5 dark:border-white/5" 
-                                                title={`View ${cit.sourceName}`}
-                                            >
-                                                <FileText className="w-3 h-3 text-indigo-500" /> {cit.sourceName}
-                                            </span>
-                                        ))}
+                        <div key={i} className="w-full min-w-0 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                            {/* --- MOBILE MESSAGE UI (sm:hidden) --- */}
+                            <div className="flex sm:hidden flex-col w-full min-w-0 gap-1.5">
+                                <div className={cn(
+                                    "flex items-center gap-1.5 px-1",
+                                    msg.role === 'user' ? "flex-row-reverse" : "flex-row"
+                                )}>
+                                    <div className={cn(
+                                        "w-5 h-5 rounded-full flex items-center justify-center shrink-0",
+                                        msg.role === 'user' ? "bg-slate-200 dark:bg-slate-800" : "bg-indigo-100 dark:bg-indigo-900/30"
+                                    )}>
+                                        {msg.role === 'user' ? <User className="w-3 h-3 text-slate-500" /> : <Bot className="w-3 h-3 text-indigo-600" />}
                                     </div>
-                                )}
+                                    <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                                        {msg.role === 'user' ? 'You' : 'Assistant'}
+                                    </span>
+                                </div>
+                                <div className={cn(
+                                    "w-fit max-w-[90%] min-w-0 rounded-2xl p-3 text-[13px] leading-relaxed break-words shadow-sm border",
+                                    msg.role === 'user' 
+                                        ? "bg-indigo-600 text-white border-indigo-500 rounded-tr-none ml-auto" 
+                                        : "bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-border rounded-tl-none mr-auto"
+                                )}>
+                                    <TypewriterEffect 
+                                        text={msg.content} 
+                                        isNew={msg._id && msg._id.startsWith('temp')}
+                                    >
+                                        {(text) => (
+                                            <ReactMarkdown 
+                                                components={{
+                                                    p: ({node, children, ...props}) => (
+                                                        <p className="mb-2 last:mb-0 break-words max-w-full overflow-hidden" {...props}>
+                                                            {renderWithCitations(children, msg.citations, onCitationClick)}
+                                                        </p>
+                                                    ),
+                                                    li: ({node, children, ...props}) => (
+                                                        <li className="mb-1 break-words max-w-full overflow-hidden" {...props}>
+                                                            {renderWithCitations(children, msg.citations, onCitationClick)}
+                                                        </li>
+                                                    ),
+                                                    ul: ({node, ...props}) => <ul className="list-disc pl-4 mb-2 space-y-1" {...props} />,
+                                                    ol: ({node, ...props}) => <ol className="list-decimal pl-4 mb-2 space-y-1" {...props} />,
+                                                }}
+                                            >
+                                                {text}
+                                            </ReactMarkdown>
+                                        )}
+                                    </TypewriterEffect>
+                                    
+                                    {Array.isArray(msg.citations) && msg.citations.length > 0 && (
+                                        <div className="mt-2 pt-2 border-t border-black/10 dark:border-white/10 flex flex-wrap gap-1">
+                                            {msg.citations.reduce((unique, cit) => {
+                                                if (!unique.some(u => u.sourceId === cit.sourceId)) {
+                                                    unique.push(cit);
+                                                }
+                                                return unique;
+                                            }, []).map((cit, idx) => (
+                                                <span 
+                                                    key={idx} 
+                                                    onClick={() => onCitationClick?.(cit)}
+                                                    className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-lg bg-black/5 dark:bg-white/5 text-[9px] font-bold text-slate-500 dark:text-slate-400 cursor-pointer border border-black/5"
+                                                >
+                                                    <FileText className="w-2.5 h-2.5" /> <span className="max-w-[80px] truncate">{cit.sourceName}</span>
+                                                </span>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* --- DESKTOP MESSAGE UI (hidden sm:flex) --- */}
+                            <div className={cn(
+                                "hidden sm:flex gap-3 w-full min-w-0",
+                                msg.role === 'user' ? "flex-row-reverse" : "flex-row"
+                            )}>
+                                <div className={cn(
+                                    "w-8 h-8 rounded-full flex items-center justify-center shrink-0 shadow-sm",
+                                    msg.role === 'user' ? "bg-slate-100 dark:bg-slate-700" : "bg-indigo-100 dark:bg-indigo-900/30"
+                                )}>
+                                    {msg.role === 'user' ? <User className="w-4 h-4 text-slate-500" /> : <Bot className="w-4 h-4 text-indigo-600" />}
+                                </div>
+                                <div className={cn(
+                                    "w-fit max-w-[75%] min-w-0 rounded-2xl p-4 text-sm leading-relaxed break-words shadow-sm border transition-all duration-300",
+                                    msg.role === 'user' 
+                                        ? "bg-indigo-600 text-white border-indigo-500 rounded-tr-none hover:shadow-indigo-500/10" 
+                                        : "bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-border rounded-tl-none hover:border-indigo-500/30"
+                                )}>
+                                    <TypewriterEffect 
+                                        text={msg.content} 
+                                        isNew={msg._id && msg._id.startsWith('temp')}
+                                    >
+                                        {(text) => (
+                                            <ReactMarkdown 
+                                                components={{
+                                                    p: ({node, children, ...props}) => (
+                                                        <p className="mb-3 last:mb-0 break-words max-w-full overflow-hidden" {...props}>
+                                                            {renderWithCitations(children, msg.citations, onCitationClick)}
+                                                        </p>
+                                                    ),
+                                                    li: ({node, children, ...props}) => (
+                                                        <li className="mb-1 break-words max-w-full overflow-hidden" {...props}>
+                                                            {renderWithCitations(children, msg.citations, onCitationClick)}
+                                                        </li>
+                                                    ),
+                                                    ul: ({node, ...props}) => <ul className="list-disc pl-5 mb-3 space-y-1.5" {...props} />,
+                                                    ol: ({node, ...props}) => <ol className="list-decimal pl-5 mb-3 space-y-1.5" {...props} />,
+                                                    strong: ({node, ...props}) => (
+                                                        <strong className={cn("font-bold", msg.role === 'user' ? "text-white underline decoration-white/30" : "text-indigo-600 dark:text-indigo-400")} {...props} />
+                                                    ),
+                                                }}
+                                            >
+                                                {text}
+                                            </ReactMarkdown>
+                                        )}
+                                    </TypewriterEffect>
+                                    
+                                    {Array.isArray(msg.citations) && msg.citations.length > 0 && (
+                                        <div className="mt-3 pt-3 border-t border-black/10 dark:border-white/10 flex flex-wrap gap-2">
+                                            {msg.citations.reduce((unique, cit) => {
+                                                if (!unique.some(u => u.sourceId === cit.sourceId)) {
+                                                    unique.push(cit);
+                                                }
+                                                return unique;
+                                            }, []).map((cit, idx) => (
+                                                <span 
+                                                    key={idx} 
+                                                    onClick={() => onCitationClick?.(cit)}
+                                                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black/5 dark:bg-white/5 text-[10px] font-bold text-slate-600 dark:text-slate-400 cursor-pointer hover:bg-black/10 dark:hover:bg-white/10 transition-colors border border-black/5 dark:border-white/5" 
+                                                >
+                                                    <FileText className="w-3 h-3 text-indigo-500" /> <span className="max-w-[120px] truncate">{cit.sourceName}</span>
+                                                </span>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     ))}
                     {isTyping && (
-                        <div className="flex gap-4">
-                            <div className="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
-                                <Bot className="w-5 h-5 text-indigo-600" />
+                        <div className="flex gap-2 sm:gap-4">
+                            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
+                                <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600" />
                             </div>
-                            <div className="bg-slate-100 dark:bg-slate-800 rounded-2xl rounded-tl-none p-4 shadow-sm border border-border/50">
+                            <div className="bg-slate-100 dark:bg-slate-800 rounded-2xl rounded-tl-none p-3 sm:p-4 shadow-sm border border-border/50">
                                 <div className="flex gap-1">
-                                    <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" />
-                                    <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce [animation-delay:0.2s]" />
-                                    <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce [animation-delay:0.4s]" />
+                                    <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-slate-400 rounded-full animate-bounce" />
+                                    <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-slate-400 rounded-full animate-bounce [animation-delay:0.2s]" />
+                                    <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-slate-400 rounded-full animate-bounce [animation-delay:0.4s]" />
                                 </div>
                             </div>
                         </div>
@@ -354,9 +431,9 @@ export default function ChatPanel({ projectId, selectedSourceId, onCitationClick
                 </div>
             </ScrollArea>
 
-            <div className="p-4 border-t border-border">
-                <div className="max-w-3xl mx-auto relative group">
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+            <div className="p-3 sm:p-4 border-t border-border bg-white dark:bg-slate-900 w-full min-w-0 shrink-0">
+                <div className="max-w-3xl mx-auto relative group w-full min-w-0">
+                    <div className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 flex items-center gap-1 sm:gap-2">
                         <Button 
                             variant="ghost" 
                             size="icon" 
@@ -364,43 +441,43 @@ export default function ChatPanel({ projectId, selectedSourceId, onCitationClick
                                 console.log("Globe clicked, old state:", isWebSearchActive);
                                 setIsWebSearchActive(!isWebSearchActive);
                             }}
-                            className={`h-9 w-9 transition-all duration-300 rounded-full ${
+                            className={`h-8 w-8 sm:h-9 sm:w-9 transition-all duration-300 rounded-full shrink-0 ${
                                 isWebSearchActive 
                                 ? 'bg-indigo-600 text-white shadow-[0_0_15px_rgba(79,70,229,0.5)] scale-110' 
                                 : 'text-slate-400 hover:text-indigo-600 hover:bg-indigo-50'
                             }`}
                             title={isWebSearchActive ? "Web Search Active" : "Enable Web Search"}
                         >
-                            <Globe className={`h-4 w-4 ${isWebSearchActive ? 'animate-spin-slow' : ''}`} />
+                            <Globe className={`h-3.5 w-3.5 sm:h-4 sm:w-4 ${isWebSearchActive ? 'animate-spin-slow' : ''}`} />
                         </Button>
                         <Button 
                             variant="ghost" 
                             size="icon" 
                             onClick={handleVoiceInput}
-                            className={`h-8 w-8 transition-colors ${isRecording ? 'text-red-500 animate-pulse bg-red-50' : 'text-slate-400 hover:text-indigo-600 hover:bg-indigo-50'}`}
+                            className={`h-7 w-7 sm:h-8 sm:w-8 transition-colors shrink-0 ${isRecording ? 'text-red-500 animate-pulse bg-red-50' : 'text-slate-400 hover:text-indigo-600 hover:bg-indigo-50'}`}
                         >
-                            <Mic className="h-4 w-4" />
+                            <Mic className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                         </Button>
                     </div>
                     <Input 
-                        placeholder={isWebSearchActive ? "Search the web and your sources..." : "Ask anything about your sources..."}
+                        placeholder={isWebSearchActive ? "Search..." : "Ask anything..."}
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                        className="pl-28 pr-12 h-14 bg-slate-50 dark:bg-slate-800 border-border focus:ring-indigo-500 rounded-2xl transition-all shadow-sm"
+                        className="pl-[85px] sm:pl-28 pr-12 h-12 sm:h-14 bg-slate-50 dark:bg-slate-800 border-border focus:ring-indigo-500 rounded-2xl transition-all shadow-sm text-sm w-full min-w-0"
                     />
                     <Button 
                         onClick={handleSend}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 h-10 w-10 rounded-xl bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-500/30 p-0 text-white"
+                        className="absolute right-1.5 sm:right-2 top-1/2 -translate-y-1/2 h-9 w-9 sm:h-10 sm:w-10 rounded-xl bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-500/30 p-0 text-white shrink-0"
                     >
-                        <Send className="h-5 w-5" />
+                        <Send className="h-4 w-4 sm:h-5 sm:w-5" />
                     </Button>
                 </div>
-                <div className="mt-3 flex justify-center gap-6 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                    <span className={`flex items-center gap-1.5 transition-colors ${isWebSearchActive ? 'text-indigo-600' : ''}`}>
-                        <Globe className="w-3 h-3" /> Search Internet {isWebSearchActive ? '(ON)' : '(OFF)'}
+                <div className="mt-2 flex justify-center gap-4 sm:gap-6 text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                    <span className={`flex items-center gap-1 transition-colors ${isWebSearchActive ? 'text-indigo-600' : ''}`}>
+                        <Globe className="w-2.5 h-2.5 sm:w-3 sm:h-3" /> {isWebSearchActive ? 'Search ON' : 'Search OFF'}
                     </span>
-                    <span className="flex items-center gap-1.5"><Sparkles className="w-3 h-3" /> Deep Analysis</span>
+                    <span className="flex items-center gap-1"><Sparkles className="w-2.5 h-2.5 sm:w-3 sm:h-3" /> Analysis</span>
                 </div>
             </div>
         </div>

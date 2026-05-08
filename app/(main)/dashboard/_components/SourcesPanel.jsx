@@ -280,7 +280,7 @@ export default function SourcesPanel({ projectId, onSourceSelect, selectedSource
                 </div>
             </ScrollArea>
 
-            <div className="p-4 border-t border-border bg-slate-50/50 dark:bg-slate-900/50">
+            <div className="hidden sm:block p-4 border-t border-border bg-slate-50/50 dark:bg-slate-900/50">
                 <div className="p-4 rounded-2xl bg-indigo-600 text-white shadow-xl shadow-indigo-500/20 relative overflow-hidden group">
                     <div className="relative z-10">
                         <p className="text-xs font-bold uppercase tracking-wider opacity-80 mb-1">Project Status</p>

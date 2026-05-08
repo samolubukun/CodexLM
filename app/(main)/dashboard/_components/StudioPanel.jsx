@@ -677,7 +677,7 @@ export default function StudioPanel({ projectId }) {
             <ScrollArea className="flex-1">
                 <div className="p-6 space-y-8">
                     {/* Categories Grid */}
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {categories.map((cat) => (
                             <div key={cat.id} className="space-y-3">
                                 <div className="flex items-center gap-2 px-1">

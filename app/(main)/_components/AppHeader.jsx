@@ -52,7 +52,7 @@ function AppHeader() {
     };
 
     return (
-        <div className='p-3 md:p-4 shadow-sm flex justify-between items-center px-4 md:px-6 bg-background border-b border-border'>
+        <div className='p-2.5 md:p-4 shadow-sm flex justify-between items-center px-3 md:px-6 bg-background border-b border-border'>
             
             {/* Hidden Modal rendered here so it triggers over everything */}
             <CreateProjectModal 
@@ -61,35 +61,37 @@ function AppHeader() {
                 onCreate={handleCreateProject} 
             />
 
-            {/* Left side: Logo */}
-            <div className="flex items-center gap-2 md:gap-4">
-                <Link href="/dashboard" className="flex items-center gap-2.5">
-                    <Image src="/logo.png" alt="CodexLM Logo" width={32} height={32} className="w-8 h-8 md:w-9 md:h-9 object-contain" />
-                    <span className="text-lg md:text-xl font-black tracking-tighter text-foreground">
+            {/* Left side: Logo — hide text on mobile when in workspace (switcher takes that space) */}
+            <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
+                <Link href="/dashboard" className="flex items-center gap-1.5 sm:gap-2.5">
+                    <Image src="/logo.png" alt="CodexLM Logo" width={32} height={32} className="w-8 h-8 object-contain shrink-0" />
+                    <span className={`text-base sm:text-lg md:text-xl font-black tracking-tighter text-foreground ${
+                        isWorkspace ? 'hidden sm:inline' : ''
+                    }`}>
                         Codex<span className="text-indigo-600">LM</span>
                     </span>
                 </Link>
             </div>
 
             {/* Right side: Controls & Profile */}
-            <div className='flex items-center gap-3 md:gap-5'>
+            <div className='flex items-center gap-2 sm:gap-3 md:gap-5 min-w-0'>
                 
                 {isWorkspace && (
-                    <div className="flex items-center gap-2 md:gap-3">
-                        {/* Project Switcher Dropdown */}
+                    <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3 min-w-0">
+                        {/* Project Switcher Dropdown — compact on mobile */}
                         <Select 
                             value={currentProjectId || ""}
                             onValueChange={(value) => router.push(`/workspace/${value}`)}
                         >
-                            <SelectTrigger className="w-[160px] sm:w-[200px] lg:w-[240px] bg-slate-100 dark:bg-slate-900 border-border hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors shadow-sm focus:ring-indigo-500 text-sm font-medium h-10">
-                                <div className="flex items-center gap-2 overflow-hidden">
-                                    <Layers className="w-4 h-4 text-slate-500 shrink-0" />
-                                    <span className="truncate">
-                                        <SelectValue placeholder="Select Workspace" />
+                            <SelectTrigger className="w-[125px] sm:w-[190px] lg:w-[240px] bg-slate-100 dark:bg-slate-900 border-border hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors shadow-sm focus:ring-indigo-500 text-[11px] sm:text-xs font-medium h-9 min-w-0">
+                                <div className="flex items-center gap-1.5 overflow-hidden min-w-0">
+                                    <Layers className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                                    <span className="truncate min-w-0">
+                                        <SelectValue placeholder="Workspace" />
                                     </span>
                                 </div>
                             </SelectTrigger>
-                            <SelectContent position="popper" className="w-[160px] sm:w-[200px] lg:w-[240px] bg-white dark:bg-slate-950 border border-border shadow-lg z-50">
+                            <SelectContent position="popper" className="w-[200px] bg-white dark:bg-slate-950 border border-border shadow-lg z-50">
                                 {projects.map(p => (
                                     <SelectItem key={p._id} value={p._id} className="cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800">
                                         {p.name}
@@ -98,17 +100,14 @@ function AppHeader() {
                             </SelectContent>
                         </Select>
 
-                        {/* Create Workspace Button */}
+                        {/* Create Workspace Button — icon only on mobile */}
                         <button 
                             onClick={() => setIsCreateModalOpen(true)}
-                            className="flex items-center gap-1.5 bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 text-sm font-semibold py-2 px-3 rounded-lg transition-colors border border-indigo-200 dark:border-indigo-800 shadow-sm"
+                            className="flex items-center gap-1.5 bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-semibold p-2 sm:py-2 sm:px-3 rounded-lg transition-colors border border-indigo-200 dark:border-indigo-800 shadow-sm shrink-0"
                         >
                             <Plus className="w-4 h-4" />
-                            <span className="hidden sm:inline">New Workspace</span>
+                            <span className="hidden sm:inline text-sm">New</span>
                         </button>
-                        
-                        {/* Separator line */}
-                        <div className="hidden sm:block w-px h-6 bg-border mx-1" />
                     </div>
                 )}
                 

@@ -5,7 +5,7 @@ function DashboardLayout({ children }) {
   return (
     <div className='h-screen flex flex-col bg-background overflow-hidden'>
       <AppHeader />
-      <main className='flex-1 overflow-hidden'>
+      <main className='flex-1 overflow-hidden relative'>
         {children}
       </main>
     </div>
