@@ -42,6 +42,8 @@ import {
     User
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 const BackgroundElements = () => {
     return (
@@ -185,24 +187,7 @@ export default function LandingPage() {
 
     return (
         <div className="flex flex-col min-h-screen bg-white text-slate-900 selection:bg-indigo-500/10 overflow-x-hidden">
-            {/* Nav */}
-            <nav className="fixed top-0 left-0 right-0 z-50 p-4 md:p-6 flex justify-between items-center backdrop-blur-md border-b border-slate-200 bg-white/80">
-                <div className="flex items-center gap-2 md:gap-2.5">
-                    <Image src="/logo.png" alt="CodexLM Logo" width={32} height={32} className="w-7 h-7 md:w-9 md:h-9 object-contain" />
-                    <span className="text-lg md:text-xl font-black tracking-tighter text-slate-900">
-                        Codex<span className="text-indigo-600">LM</span>
-                    </span>
-                </div>
-                <div className="flex items-center gap-4 md:gap-6">
-                    <Button 
-                        onClick={handleGetStarted}
-                        size="sm"
-                        className="rounded-full px-4 md:px-6 bg-indigo-600 text-white hover:bg-indigo-700 font-bold shadow-lg shadow-indigo-500/20 text-xs md:text-sm"
-                    >
-                        Go to Dashboard
-                    </Button>
-                </div>
-            </nav>
+            <Header />
 
             <main className="flex-1">
                 {/* Hero */}
@@ -552,19 +537,7 @@ export default function LandingPage() {
                 </section>
             </main>
 
-            <footer className="py-16 md:py-20 px-6 border-t border-slate-100 text-center bg-slate-50">
-                <div className="flex flex-col justify-center items-center gap-4 mb-10">
-                    <Image src="/logo.png" alt="CodexLM Logo" width={80} height={80} className="w-20 h-20 object-contain grayscale opacity-50" />
-                    <span className="text-xl md:text-2xl font-black tracking-tighter text-slate-400">CodexLM</span>
-                </div>
-                <p className="text-slate-400 text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em] px-4 leading-relaxed">© 2026 CodexLM. Empowering your knowledge journey.</p>
-                <p className="text-[11px] text-slate-400 mt-6 font-medium">
-                    Designed and developed by{" "}
-                    <a href="https://samuelolubukun.netlify.app/" target="_blank" rel="noopener noreferrer" className="text-indigo-500 hover:text-indigo-600 transition-colors font-bold">
-                        Samuel Olubukun
-                    </a>
-                </p>
-            </footer>
+            <Footer />
         </div>
     );
 }
