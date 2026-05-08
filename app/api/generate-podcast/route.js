@@ -40,7 +40,7 @@ export async function POST(req) {
 
         // 2. Generate Script using Gemini with forced JSON output
         const model = genAI.getGenerativeModel({ 
-            model: "gemini-3.1-flash-lite-preview",
+            model: process.env.GEMINI_MODEL || "gemini-3.1-flash-lite-preview",
             generationConfig: {
                 responseMimeType: "application/json",
             }

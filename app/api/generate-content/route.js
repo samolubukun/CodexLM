@@ -25,7 +25,7 @@ export async function POST(req) {
         const matches = await queryVectors(vector, 10, { projectId });
         const context = matches.map(m => m.metadata.text).join("\n---\n");
 
-        const model = genAI.getGenerativeModel({ model: "gemini-3.1-flash-lite-preview" });
+        const model = genAI.getGenerativeModel({ model: process.env.GEMINI_MODEL || "gemini-3.1-flash-lite-preview" });
 
         let prompt = "";
         

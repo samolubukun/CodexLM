@@ -72,7 +72,7 @@ The Studio transforms raw research into structured professional outputs across s
 | Authentication | Stack Auth |
 | Vector Engine | Pinecone (Serverless) |
 | Audio Intelligence | Deepgram Aura-2 (TTS) and Nova-2 (STT) |
-| LLM Engine | Google Gemini 3.1 Flash Lite |
+| LLM Engine | Google Gemini (Configurable via ENV) |
 | File Storage | DigitalOcean Spaces (S3-Compatible) |
 
 ## Installation and Setup
