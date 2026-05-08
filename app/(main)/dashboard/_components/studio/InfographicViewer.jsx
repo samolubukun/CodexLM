@@ -4,15 +4,15 @@ export function InfographicViewer({ data }) {
     return (
         <div className="space-y-6 pb-12 max-w-6xl mx-auto animate-in fade-in duration-700">
             {/* High-Info Header Section */}
-            <div className="p-8 bg-[#1e1b4b] rounded-[2.5rem] text-white shadow-2xl relative overflow-hidden border border-indigo-500/20">
+            <div className="p-6 sm:p-8 bg-[#1e1b4b] rounded-[2.5rem] text-white shadow-2xl relative overflow-hidden border border-indigo-500/20 w-full min-w-0">
                 <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                     <div className="lg:col-span-7 space-y-4">
                         <div className="flex items-center gap-3">
                             <span className="px-2.5 py-1 bg-indigo-500/30 border border-indigo-400/30 rounded-lg text-[9px] font-black uppercase tracking-[0.2em]">Intelligence Synthesis</span>
                             <div className="h-px flex-1 bg-gradient-to-r from-indigo-500/50 to-transparent" />
                         </div>
-                        <h4 className="text-3xl font-black leading-[1.1] tracking-tight max-w-xl">{data.title}</h4>
-                        <p className="text-indigo-200/70 text-xs font-medium leading-relaxed max-w-lg">{data.mainGoal}</p>
+                        <h4 className="text-2xl sm:text-3xl font-black leading-[1.1] tracking-tight max-w-xl break-words">{data.title}</h4>
+                        <p className="text-indigo-200/70 text-xs font-medium leading-relaxed max-w-lg break-words">{data.mainGoal}</p>
                     </div>
                     
                     {/* Stats Grid - Now wraps correctly */}
@@ -32,8 +32,8 @@ export function InfographicViewer({ data }) {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Column 1: Core Insights */}
-                <div className="lg:col-span-2 space-y-6">
-                    <div className="p-8 bg-white dark:bg-slate-900 rounded-[2.5rem] border border-border shadow-sm">
+                <div className="lg:col-span-2 space-y-6 w-full min-w-0">
+                    <div className="p-6 sm:p-8 bg-white dark:bg-slate-900 rounded-[2.5rem] border border-border shadow-sm w-full min-w-0">
                         <div className="flex items-center gap-3 mb-8">
                             <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center text-white">
                                 <Zap className="w-4 h-4" />
@@ -44,14 +44,14 @@ export function InfographicViewer({ data }) {
                             {data.keyTakeaways?.map((item, i) => (
                                 <div key={i} className="flex gap-4 group">
                                     <div className="mt-1 w-1.5 h-1.5 rounded-full bg-indigo-600 shrink-0 group-hover:scale-150 transition-all" />
-                                    <p className="text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed font-medium">{item}</p>
+                                    <p className="text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed font-medium break-words w-full min-w-0">{item}</p>
                                 </div>
                             ))}
                         </div>
                     </div>
 
                     {/* New Info Section: Action Items */}
-                    <div className="p-8 bg-emerald-50/50 dark:bg-emerald-950/10 rounded-[2.5rem] border border-emerald-100 dark:border-emerald-900/30">
+                    <div className="p-6 sm:p-8 bg-emerald-50/50 dark:bg-emerald-950/10 rounded-[2.5rem] border border-emerald-100 dark:border-emerald-900/30 w-full min-w-0">
                         <h5 className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-600 mb-6">Actionable Next Steps</h5>
                         <div className="flex flex-wrap gap-3">
                             {data.timeline?.map((step, i) => (
@@ -65,7 +65,7 @@ export function InfographicViewer({ data }) {
                 </div>
 
                 {/* Column 2: Detailed Process / Specs */}
-                <div className="p-8 bg-slate-50 dark:bg-slate-900/50 rounded-[2.5rem] border border-border">
+                <div className="p-6 sm:p-8 bg-slate-50 dark:bg-slate-900/50 rounded-[2.5rem] border border-border w-full min-w-0">
                     <h5 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-8">Structural Roadmap</h5>
                     <div className="space-y-8 relative">
                         <div className="absolute left-[11px] top-2 bottom-2 w-px bg-slate-200 dark:bg-slate-800" />
@@ -74,9 +74,9 @@ export function InfographicViewer({ data }) {
                                 <div className="w-[23px] h-[23px] rounded-full bg-white dark:bg-slate-800 border-2 border-indigo-600 flex items-center justify-center text-[9px] font-black z-10 shrink-0">
                                     {i+1}
                                 </div>
-                                <div className="space-y-1.5 pt-0.5">
-                                    <p className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-tight">{step.stage}</p>
-                                    <p className="text-[11px] text-slate-500 leading-relaxed font-medium">{step.description}</p>
+                                <div className="space-y-1.5 pt-0.5 w-full min-w-0">
+                                    <p className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-tight break-words">{step.stage}</p>
+                                    <p className="text-[11px] text-slate-500 leading-relaxed font-medium break-words">{step.description}</p>
                                 </div>
                             </div>
                         ))}

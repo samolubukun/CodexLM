@@ -3,12 +3,12 @@ import { Button } from '@/components/ui/button'
 
 export function DataTableViewer({ data }) {
     return (
-        <div className="space-y-8 pb-10">
-            <div className="p-8 bg-white dark:bg-slate-900 rounded-[2.5rem] border border-border shadow-sm overflow-hidden">
-                <div className="flex items-center justify-between mb-8">
-                    <div className="space-y-1">
+        <div className="space-y-8 pb-10 w-full min-w-0">
+            <div className="p-4 sm:p-8 bg-white dark:bg-slate-900 rounded-[2.5rem] border border-border shadow-sm overflow-hidden w-full min-w-0">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
+                    <div className="space-y-1 w-full min-w-0">
                         <span className="text-[10px] font-black uppercase tracking-widest text-indigo-600">Dataset Extraction</span>
-                        <h4 className="text-2xl font-black text-slate-900 dark:text-white">{data.title}</h4>
+                        <h4 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white break-words">{data.title}</h4>
                     </div>
                     <Button variant="outline" size="sm" className="rounded-xl text-[10px] font-black uppercase tracking-widest h-8">
                         <Download className="w-3 h-3 mr-2" />

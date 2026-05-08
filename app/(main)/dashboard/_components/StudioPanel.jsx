@@ -335,13 +335,13 @@ export default function StudioPanel({ projectId }) {
             }
             
             return (
-                <div className="space-y-4">
+                <div className="space-y-4 w-full min-w-0">
                     {sidebarHeader}
-                    <div className="space-y-4">
+                    <div className="space-y-4 w-full min-w-0">
                         {result.map((item, i) => (
-                            <div key={i} className="p-5 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-border/50">
-                                <h4 className="font-black text-xs uppercase tracking-wider text-indigo-600 mb-2">{item.question || item.title || `Item ${i+1}`}</h4>
-                                <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+                            <div key={i} className="p-4 sm:p-5 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-border/50 w-full min-w-0 break-words">
+                                <h4 className="font-black text-xs uppercase tracking-wider text-indigo-600 mb-2 break-words">{item.question || item.title || `Item ${i+1}`}</h4>
+                                <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed break-words">
                                     {item.answer || (Array.isArray(item.content) ? item.content.join('\n') : item.content)}
                                 </p>
                             </div>
@@ -358,7 +358,7 @@ export default function StudioPanel({ projectId }) {
                     {sidebarHeader}
                     
                     {/* Strategy Header */}
-                    <div className="p-6 bg-indigo-600 rounded-3xl text-white shadow-xl shadow-indigo-500/20">
+                    <div className="p-5 sm:p-6 bg-indigo-600 rounded-3xl text-white shadow-xl shadow-indigo-500/20 w-full min-w-0">
                         <div className="flex items-center gap-2 mb-4">
                             <span className="px-2 py-0.5 bg-white/20 rounded text-[9px] font-black uppercase tracking-widest">Campaign Strategy</span>
                         </div>
@@ -371,9 +371,9 @@ export default function StudioPanel({ projectId }) {
                         <div className="flex items-center gap-2 px-1">
                             <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Twitter Posts</span>
                         </div>
-                        <div className="grid grid-cols-1 gap-4">
+                        <div className="grid grid-cols-1 gap-4 w-full min-w-0">
                             {result.twitter?.map((post, i) => (
-                                <div key={i} className="p-5 bg-white dark:bg-slate-800 rounded-2xl border border-border shadow-sm hover:border-blue-400 transition-colors">
+                                <div key={i} className="p-4 sm:p-5 bg-white dark:bg-slate-800 rounded-2xl border border-border shadow-sm hover:border-blue-400 transition-colors break-words">
                                     <div className="flex items-center gap-2 mb-3">
                                         <div className="w-6 h-6 bg-slate-100 dark:bg-slate-700 rounded-full" />
                                         <div className="flex flex-col">
@@ -391,8 +391,8 @@ export default function StudioPanel({ projectId }) {
                         <div className="flex items-center gap-2 px-1">
                             <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">LinkedIn Post</span>
                         </div>
-                        <div className="p-6 bg-white dark:bg-slate-800 rounded-2xl border border-border shadow-sm">
-                            <div className="text-sm text-slate-700 dark:text-slate-200 leading-relaxed prose-p:mb-4">
+                        <div className="p-4 sm:p-6 bg-white dark:bg-slate-800 rounded-2xl border border-border shadow-sm w-full min-w-0">
+                            <div className="text-sm text-slate-700 dark:text-slate-200 leading-relaxed prose-p:mb-4 break-words">
                                 <ReactMarkdown>{result.linkedin}</ReactMarkdown>
                             </div>
                         </div>
@@ -403,12 +403,12 @@ export default function StudioPanel({ projectId }) {
                         <div className="flex items-center gap-2 px-1">
                             <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Email Template</span>
                         </div>
-                        <div className="bg-white dark:bg-slate-800 rounded-2xl border border-border shadow-sm overflow-hidden">
-                            <div className="px-6 py-3 bg-slate-50 dark:bg-slate-900 border-b border-border">
-                                <p className="text-[10px] font-bold text-slate-400"><span className="text-slate-500 mr-2 uppercase tracking-widest">Subject:</span> {result.email?.subject}</p>
+                        <div className="bg-white dark:bg-slate-800 rounded-2xl border border-border shadow-sm overflow-hidden w-full min-w-0">
+                            <div className="px-4 py-3 sm:px-6 bg-slate-50 dark:bg-slate-900 border-b border-border">
+                                <p className="text-[10px] font-bold text-slate-400 break-words"><span className="text-slate-500 mr-2 uppercase tracking-widest">Subject:</span> {result.email?.subject}</p>
                             </div>
-                            <div className="p-6">
-                                <div className="text-sm text-slate-700 dark:text-slate-200 leading-relaxed whitespace-pre-wrap">
+                            <div className="p-4 sm:p-6 w-full min-w-0">
+                                <div className="text-sm text-slate-700 dark:text-slate-200 leading-relaxed whitespace-pre-wrap break-words">
                                     <ReactMarkdown>{result.email?.body}</ReactMarkdown>
                                 </div>
                             </div>
@@ -782,8 +782,8 @@ export default function StudioPanel({ projectId }) {
                         </div>
                     </DialogHeader>
                     
-                    <div className="flex-1 overflow-y-auto sleek-scrollbar">
-                        <div className="max-w-4xl mx-auto w-full py-12 px-6 lg:px-12">
+                    <div className="flex-1 overflow-y-auto sleek-scrollbar w-full min-w-0">
+                        <div className="max-w-4xl mx-auto w-full py-6 sm:py-12 px-4 sm:px-6 lg:px-12 min-w-0">
                             {renderResult(true)}
                         </div>
                     </div>
