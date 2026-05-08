@@ -1,6 +1,8 @@
 
 <div align="center">
  
+<img src="./public/logo.png" width="120" alt="CodexLM Logo" />
+ 
 # CodexLM
 
 ### The Professional Agentic AI Research Platform
@@ -38,17 +40,28 @@ A specialized research-first chat interface grounded in project-specific data:
 *   Project Context: System-level instructions that define tone, scope, and constraints for the AI agent.
 *   Voice Interaction: High-fidelity speech-to-text for hands-free knowledge retrieval.
 
-### Creative Studio Modes
-The Studio transforms raw research into structured professional outputs through three primary modes:
+### Creative Studio Suite
+The Studio transforms raw research into structured professional outputs across six specialized categories:
 
-#### 1. Podcast Generation
-Converts complex documents into a two-person dialogue script. Features high-quality audio synthesis using Deepgram Aura-2, providing a professional audio briefing of your data.
+#### 1. Audio Briefings
+*   **Podcast Overview**: Converts complex documents into a two-person dialogue script with high-quality audio synthesis powered by Deepgram Aura-2.
 
-#### 2. Flashcard Suite
-Generates interactive, 3D-rendered study cards. Optimized for rapid knowledge retention, allowing users to master large volumes of data through tactile digital interfaces.
+#### 2. Visual Architecture
+*   **Flow Diagrams & Mind Maps**: Instantly visualize complex concepts and project hierarchies using fully interactive Mermaid.js rendering.
+*   **Infographics**: Transform data points into visually engaging, structured summaries.
 
-#### 3. Quiz Framework
-Automatically constructs comprehensive assessments from ingested sources. Ideal for knowledge verification and technical onboarding.
+#### 3. Professional Documentation
+*   **PRD & Business Reports**: Generate high-fidelity product requirements and strategic business analysis directly from your source material.
+*   **Data Tables**: Extract and structure unstructured data into clean, exportable tabular formats.
+
+#### 4. Learning & Mastery
+*   **Flashcard Suite**: Interactive, 3D-rendered study cards optimized for rapid knowledge retention.
+*   **Quiz Framework**: Automated assessments to verify knowledge and technical onboarding.
+
+#### 5. Presentation & Marketing
+*   **Slide Decks**: Ready-to-present visual layouts summarizing your project's core insights.
+*   **Social Pack**: Tailored content for LinkedIn, Twitter, and email campaigns based on your research findings.
+
 
 ## Technical Stack
 
