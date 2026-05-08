@@ -365,4 +365,9 @@ input::placeholder, textarea::placeholder { opacity: 0.45; }
   padding: 2px 4px;
 }
 
+/* Hide Stack Auth Development Badge */
+.sdt-trigger {
+  display: none !important;
+}
+
 
