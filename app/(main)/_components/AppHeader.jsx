@@ -65,7 +65,7 @@ function AppHeader() {
             <div className="flex items-center gap-2 md:gap-4">
                 <Link href="/dashboard" className="flex items-center gap-2.5">
                     <Image src="/logo.png" alt="CodexLM Logo" width={32} height={32} className="w-8 h-8 md:w-9 md:h-9 object-contain" />
-                    <span className="text-xl font-black tracking-tighter text-foreground hidden sm:block">
+                    <span className="text-lg md:text-xl font-black tracking-tighter text-foreground">
                         Codex<span className="text-indigo-600">LM</span>
                     </span>
                 </Link>
