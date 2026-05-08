@@ -6,6 +6,8 @@ import StudioPanel from '@/app/(main)/dashboard/_components/StudioPanel'
 import SourceViewer from '@/app/(main)/dashboard/_components/SourceViewer'
 import { cn } from '@/lib/utils'
 import { BookOpen, Bot, Zap, ChevronLeft } from 'lucide-react'
+import { useQuery } from "convex/react"
+import { api } from "@/convex/_generated/api"
 
 export default function Workspace({ params }) {
     // Unwind params Promise for Next.js 14+ best practices if it's dynamic
@@ -16,6 +18,8 @@ export default function Workspace({ params }) {
     const [activePassage, setActivePassage] = useState(null);
     const [leftPanelTab, setLeftPanelTab] = useState('list'); // 'list' or 'source'
     const [activeMobileTab, setActiveMobileTab] = useState('chat'); // 'sources', 'chat', 'studio'
+
+    const sources = useQuery(api.sources.getSourcesByProject, projectId ? { projectId } : "skip") || [];
 
     const handleCitationClick = (citation) => {
         setSelectedSourceId(citation.sourceId);
@@ -87,7 +91,14 @@ export default function Workspace({ params }) {
                         activeMobileTab === 'sources' ? "text-indigo-600" : "text-slate-400"
                     )}
                 >
-                    <BookOpen className="w-5 h-5" />
+                    <div className="relative">
+                        <BookOpen className="w-5 h-5" />
+                        {sources.length > 0 && (
+                            <span className="absolute -top-2 -right-2 flex min-w-[14px] h-[14px] items-center justify-center rounded-full bg-indigo-600 px-1 text-[7px] font-black text-white ring-2 ring-white dark:ring-slate-900 shadow-sm animate-in zoom-in duration-300">
+                                {sources.length}
+                            </span>
+                        )}
+                    </div>
                     <span className="text-[9px] font-bold uppercase tracking-widest">Sources</span>
                 </button>
                 
