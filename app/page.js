@@ -48,32 +48,31 @@ import Footer from "@/components/Footer";
 const BackgroundElements = () => {
     return (
         <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-            {/* Animated Blobs */}
+            {/* Animated Shapes */}
             <motion.div 
                 animate={{ 
-                    x: [0, 50, 0], 
-                    y: [0, 30, 0],
-                    scale: [1, 1.1, 1]
+                    rotate: [0, 90, 180, 270, 360],
+                    scale: [1, 1.2, 1]
                 }}
                 transition={{ 
-                    duration: 20, 
+                    duration: 30, 
                     repeat: Infinity, 
                     ease: "linear" 
                 }}
-                className="absolute top-1/4 -left-20 w-[400px] md:w-[600px] h-[400px] md:h-[600px] bg-indigo-500/20 blur-[100px] md:blur-[140px] rounded-full" 
+                className="absolute top-1/4 -left-20 w-[400px] md:w-[600px] h-[400px] md:h-[600px] border-4 border-indigo-500/10 rounded-none" 
             />
 
             <motion.div 
                 animate={{ 
-                    x: [0, 30, 0], 
-                    y: [0, -50, 0],
+                    x: [0, 100, 0], 
+                    y: [0, -100, 0],
                 }}
                 transition={{ 
-                    duration: 18, 
+                    duration: 25, 
                     repeat: Infinity, 
                     ease: "linear" 
                 }}
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-blue-400/10 blur-[80px] md:blur-[120px] rounded-full" 
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] md:w-[500px] h-[300px] md:h-[500px] border-4 border-blue-400/10 rounded-full" 
             />
 
             {/* Technical Grid */}
@@ -86,19 +85,17 @@ const BackgroundElements = () => {
                     repeat: Infinity, 
                     ease: "linear" 
                 }}
-                className="absolute inset-0 opacity-[0.3] dark:opacity-[0.1]"
+                className="absolute inset-0 opacity-[0.2]"
                 style={{ 
-                    backgroundImage: `linear-gradient(#6366f1 1px, transparent 1px), linear-gradient(90deg, #6366f1 1px, transparent 1px)`,
+                    backgroundImage: `linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)`,
                     backgroundSize: '40px 40px',
-                    maskImage: 'radial-gradient(circle at center, black, transparent 80%)'
+                    maskImage: 'radial-gradient(circle at center, black, transparent 90%)'
                 }}
             />
 
-
-
             {/* Floating Nodes */}
             {[...Array(15)].map((_, i) => {
-                const size = 2 + Math.random() * 4;
+                const size = 10 + Math.random() * 20;
                 return (
                     <motion.div
                         key={i}
@@ -109,17 +106,16 @@ const BackgroundElements = () => {
                         }}
                         animate={{ 
                             y: ["110%", "-10%"],
-                            x: ["-2%", "2%", "-2%"],
-                            opacity: [0, 0.4, 0.4, 0],
-                            scale: [0.8, 1.2, 0.8]
+                            rotate: [0, 360],
+                            opacity: [0, 0.2, 0.2, 0],
                         }}
                         transition={{ 
-                            duration: 10 + Math.random() * 15, 
+                            duration: 15 + Math.random() * 20, 
                             repeat: Infinity, 
-                            ease: "easeInOut",
+                            ease: "linear",
                             delay: i * 1.5
                         }}
-                        className="absolute bg-indigo-600 rounded-full shadow-[0_0_15px_rgba(79,70,229,0.4)]"
+                        className="absolute border-2 border-indigo-600/30"
                         style={{ 
                             width: `${size}px`, 
                             height: `${size}px`,
@@ -199,24 +195,24 @@ export default function LandingPage() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.8 }}
                         >
-                            <div className="inline-flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-full border border-indigo-200 bg-white text-indigo-600 mb-6 md:mb-8 shadow-sm">
-                                <Sparkles className="w-3.5 h-3.5 md:w-4 md:h-4" />
-                                <span className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em]">Every Source Understood</span>
+                            <div className="inline-flex items-center gap-2 px-4 py-2 border-4 border-black bg-yellow-300 text-black mb-8 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                                 <Sparkles className="w-4 h-4" />
+                                 <span className="text-xs font-black uppercase tracking-[0.2em]">Every Source Understood</span>
                             </div>
 
-                            <h1 className="text-4xl sm:text-6xl md:text-8xl font-black mb-6 md:mb-8 leading-[1.1] md:leading-[0.9] tracking-tighter text-slate-900">
+                            <h1 className="text-4xl sm:text-6xl md:text-8xl font-black mb-8 leading-[1.1] md:leading-[0.9] tracking-tighter text-slate-900 uppercase">
                                 Your Knowledge, <br />
-                                <span className="bg-gradient-to-r from-indigo-600 via-violet-600 to-indigo-500 text-transparent bg-clip-text italic">Amplified.</span>
+                                <span className="bg-indigo-500 text-white px-4 py-2 inline-block -rotate-1 border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mt-4">Amplified.</span>
                             </h1>
 
-                            <p className="text-lg md:text-2xl text-slate-500 max-w-2xl mx-auto mb-10 md:mb-12 font-medium leading-relaxed px-4">
+                            <p className="text-lg md:text-2xl text-slate-700 max-w-2xl mx-auto mb-12 font-bold leading-relaxed px-4">
                                 Upload any source. Chat with deep context. Generate studio quality outputs. CodexLM is your personal agentic workspace for the era of intelligence.
                             </p>
 
                             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center px-4">
                                 <Button
                                     onClick={handleGetStarted}
-                                    className="w-full sm:w-auto px-8 md:px-10 py-6 md:py-8 text-lg md:text-xl rounded-2xl bg-indigo-600 hover:bg-indigo-700 shadow-2xl shadow-indigo-500/20 transition-all group border-b-4 border-indigo-800 active:border-b-0 active:translate-y-1"
+                                    className="w-full sm:w-auto px-6 md:px-10 py-4 md:py-8 text-lg md:text-xl rounded-none bg-indigo-500 text-white border-2 md:border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] md:hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-0.5 md:hover:-translate-x-1 hover:-translate-y-0.5 md:hover:-translate-y-1 active:translate-x-0.5 md:active:translate-x-1 active:translate-y-0.5 md:active:translate-y-1 active:shadow-none transition-all font-black uppercase tracking-widest h-auto"
                                 >
                                     Get Started
                                 </Button>
@@ -231,11 +227,11 @@ export default function LandingPage() {
                             className="mt-16 md:mt-24 relative max-w-6xl mx-auto group px-4"
                         >
                             {/* Desktop View Mockup */}
-                            <div className="hidden md:block p-3 rounded-[2.5rem] bg-white border border-slate-200 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.12)] transition-transform duration-700 group-hover:scale-[1.01]">
-                                <div className="rounded-[1.8rem] overflow-hidden bg-slate-50 aspect-[16/8] border border-slate-200 flex flex-col shadow-inner text-left">
+                            <div className="hidden md:block p-1 bg-black border-4 border-black shadow-[20px_20px_0px_0px_rgba(0,0,0,1)] transition-transform duration-700 group-hover:scale-[1.01]">
+                                <div className="overflow-hidden bg-white aspect-[16/8] border-4 border-black flex flex-col shadow-inner text-left">
                                     
                                     {/* Mockup AppHeader */}
-                                    <div className="h-14 border-b border-slate-200 bg-white flex items-center px-6 justify-between flex-shrink-0">
+                                    <div className="h-14 border-b-4 border-black bg-white flex items-center px-6 justify-between flex-shrink-0">
                                         <div className="flex items-center gap-2">
                                             <Image src="/logo.png" alt="CodexLM" width={24} height={24} />
                                             <span className="text-sm font-black tracking-tighter">Codex<span className="text-indigo-600">LM</span></span>
@@ -403,8 +399,8 @@ export default function LandingPage() {
 
                             {/* INTERACTIVE MOBILE VIEW MOCKUP */}
                             <div className="md:hidden flex flex-col items-center justify-center relative">
-                                <div className="w-[280px] h-[520px] bg-white border-[8px] border-slate-900 rounded-[3rem] shadow-2xl relative overflow-hidden flex flex-col">
-                                    <div className="w-24 h-5 bg-slate-900 absolute top-0 left-1/2 -translate-x-1/2 rounded-b-2xl z-20" />
+                                <div className="w-[280px] h-[520px] bg-white border-8 border-black shadow-[15px_15px_0px_0px_rgba(0,0,0,1)] relative overflow-hidden flex flex-col">
+                                    <div className="w-24 h-5 bg-black absolute top-0 left-1/2 -translate-x-1/2 rounded-none z-20" />
                                     
                                     <div className="flex-1 flex flex-col bg-slate-50 pt-10 px-4">
                                         <AnimatePresence mode="wait">
@@ -516,29 +512,29 @@ export default function LandingPage() {
                 </section>
 
                 {/* How it Works */}
-                <section className="py-24 md:py-40 px-6 bg-slate-50 relative overflow-hidden border-t border-slate-100">
+                <section className="py-24 md:py-40 px-6 bg-yellow-300 relative overflow-hidden border-t-8 border-black">
                     <div className="max-w-7xl mx-auto relative z-10">
                         <div className="text-center mb-16 md:mb-24">
-                            <h2 className="text-[10px] md:text-xs font-black uppercase tracking-[0.3em] text-indigo-600 mb-4">The Workflow</h2>
-                            <p className="text-3xl md:text-5xl font-black text-slate-900 tracking-tight">How CodexLM transforms research.</p>
+                            <h2 className="text-xs md:text-sm font-black uppercase tracking-[0.3em] text-black mb-4">The Workflow</h2>
+                            <p className="text-3xl md:text-6xl font-black text-black uppercase tracking-tight italic">How CodexLM transforms research.</p>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8">
                             {[
-                                { icon: UploadCloud, title: "1. Ingest", desc: "Upload PDFs, paste links, or upload audio files instantly." },
-                                { icon: Cpu, title: "2. Analyze", desc: "Our AI maps deep connections across your entire workspace." },
-                                { icon: Bot, title: "3. Interact", desc: "Engage in deep, context-aware dialogue with your knowledge base." },
-                                { icon: Zap, title: "4. Create", desc: "Generate mind maps, audio briefings, and studio-quality outputs." }
+                                { icon: UploadCloud, title: "1. Ingest", desc: "Upload PDFs, paste links, or upload audio files instantly.", color: "bg-pink-400" },
+                                { icon: Cpu, title: "2. Analyze", desc: "Our AI maps deep connections across your entire workspace.", color: "bg-cyan-400" },
+                                { icon: Bot, title: "3. Interact", desc: "Engage in deep, context-aware dialogue with your knowledge base.", color: "bg-emerald-400" },
+                                { icon: Zap, title: "4. Create", desc: "Generate mind maps, audio briefings, and studio-quality outputs.", color: "bg-orange-400" }
                             ].map((step, i) => (
                                 <div key={i} className="relative flex flex-col items-center text-center group">
-                                    <div className="w-20 h-20 rounded-[2rem] bg-white border border-slate-200 shadow-xl shadow-black/[0.02] flex items-center justify-center mb-8 group-hover:scale-110 group-hover:border-indigo-500/30 transition-all duration-500 bg-gradient-to-br from-white to-slate-50">
-                                        <step.icon className="w-8 h-8 text-indigo-600" />
+                                    <div className={`w-20 h-20 md:w-24 md:h-24 border-2 md:border-4 border-black ${step.color} shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center mb-8 group-hover:-translate-x-1 group-hover:-translate-y-1 transition-all duration-300`}>
+                                        <step.icon className="w-8 h-8 md:w-10 md:h-10 text-black" />
                                     </div>
-                                    <h3 className="text-xl font-black text-slate-900 mb-3 tracking-tight">{step.title}</h3>
-                                    <p className="text-slate-500 font-medium text-sm leading-relaxed px-4">{step.desc}</p>
+                                    <h3 className="text-2xl font-black text-black mb-3 uppercase tracking-tight">{step.title}</h3>
+                                    <p className="text-black font-bold text-sm leading-relaxed px-4">{step.desc}</p>
                                     
                                     {i < 3 && (
-                                        <div className="hidden md:block absolute top-10 left-[65%] w-[70%] h-px bg-slate-200" />
+                                        <div className="hidden md:block absolute top-12 left-[70%] w-[60%] h-1 bg-black" />
                                     )}
                                 </div>
                             ))}
@@ -547,20 +543,20 @@ export default function LandingPage() {
                 </section>
 
                 {/* Features Grid */}
-                <section className="py-20 md:py-32 px-6 bg-white">
+                <section className="py-20 md:py-32 px-6 bg-white border-t-8 border-black">
                     <div className="max-w-7xl mx-auto">
                         <div className="text-center mb-12 md:mb-20 px-4">
-                            <h2 className="text-[10px] md:text-xs font-black uppercase tracking-[0.3em] text-indigo-600 mb-4">The Platform</h2>
-                            <p className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">Everything you need to master your library.</p>
+                            <h2 className="text-xs md:text-sm font-black uppercase tracking-[0.3em] text-indigo-600 mb-4">The Platform</h2>
+                            <p className="text-3xl md:text-5xl font-black text-slate-900 tracking-tight uppercase">Everything you need to master your library.</p>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {features.map((f, i) => (
-                                <div key={i} className="p-8 md:p-10 rounded-[2rem] bg-slate-50 border border-slate-200 hover:border-indigo-500/30 hover:bg-white hover:shadow-2xl hover:shadow-indigo-500/5 transition-all group">
-                                    <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-white border border-slate-200 flex items-center justify-center mb-6 md:mb-8 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-sm">
-                                        <f.icon className="w-7 h-7 md:w-8 md:h-8 text-indigo-600" />
+                                <div key={i} className="p-8 md:p-10 border-4 border-black bg-white shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] md:hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-1 hover:-translate-y-1 transition-all group hover:bg-indigo-50">
+                                    <div className="w-16 h-16 border-4 border-black bg-white flex items-center justify-center mb-8 group-hover:rotate-3 transition-all duration-500 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                                        <f.icon className="w-8 h-8 text-black" />
                                     </div>
-                                    <h3 className="text-xl md:text-2xl font-black mb-4 text-slate-900 tracking-tight">{f.title}</h3>
-                                    <p className="text-slate-500 leading-relaxed font-medium text-sm">{f.desc}</p>
+                                    <h3 className="text-2xl font-black mb-4 text-slate-900 tracking-tight uppercase">{f.title}</h3>
+                                    <p className="text-slate-700 leading-relaxed font-bold text-sm">{f.desc}</p>
                                 </div>
                             ))}
                         </div>
@@ -569,30 +565,30 @@ export default function LandingPage() {
             </main>
 
             {/* Final CTA */}
-            <section className="py-20 md:py-32 px-6 bg-white">
+            <section className="py-20 md:py-32 px-6 bg-white border-t-8 border-black">
                 <div className="max-w-5xl mx-auto">
-                    <div className="relative rounded-[3rem] bg-slate-900 overflow-hidden p-8 md:p-16 text-center shadow-2xl shadow-indigo-500/20">
+                    <div className="relative border-4 md:border-8 border-black bg-indigo-500 overflow-hidden p-6 md:p-20 text-center shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] md:shadow-[20px_20px_0px_0px_rgba(0,0,0,1)]">
                         {/* Decorative Background Elements */}
-                        <div className="absolute top-0 left-0 w-full h-full opacity-30 pointer-events-none">
-                            <div className="absolute -top-24 -left-24 w-64 h-64 bg-indigo-600 blur-[100px] rounded-full" />
-                            <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-emerald-600 blur-[100px] rounded-full" />
+                        <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+                            <div className="absolute -top-24 -left-24 w-64 h-64 border-8 border-black rounded-full" />
+                            <div className="absolute -bottom-24 -right-24 w-64 h-64 border-8 border-black rounded-full" />
                         </div>
                         
-                        <div className="relative z-10 space-y-10">
-                            <h2 className="text-3xl sm:text-4xl md:text-6xl font-black text-white tracking-tighter leading-[1.1]">
+                        <div className="relative z-10 space-y-8 md:space-y-12">
+                            <h2 className="text-2xl sm:text-5xl md:text-7xl font-black text-white tracking-tighter leading-[1.1] uppercase">
                                 Master Your Knowledge. <br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-violet-400 to-emerald-400 italic">Start Today.</span>
+                                <span className="bg-yellow-300 text-black px-4 py-1 md:px-6 md:py-2 inline-block -rotate-1 border-2 md:border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mt-4 md:mt-6">Start Today.</span>
                             </h2>
-                            <p className="text-slate-400 text-lg md:text-2xl max-w-2xl mx-auto font-medium leading-relaxed">
+                            <p className="text-base md:text-2xl text-white max-w-2xl mx-auto font-black leading-tight uppercase tracking-tight">
                                 Experience the future of research with CodexLM's agentic workspace. 
                                 Everything you need to know, understood instantly.
                             </p>
-                            <div className="pt-6">
+                            <div className="pt-4 md:pt-8">
                                 <Button 
                                     onClick={handleGetStarted}
-                                    className="w-full sm:w-auto px-6 md:px-12 py-6 md:py-10 text-lg md:text-2xl rounded-[1.5rem] md:rounded-[2rem] bg-indigo-600 hover:bg-indigo-700 text-white shadow-2xl shadow-indigo-500/50 transition-all hover:scale-[1.05] active:scale-[0.95] font-black border-b-4 border-indigo-800"
+                                    className="w-full sm:w-auto px-4 md:px-12 py-4 md:py-10 text-xs sm:text-lg md:text-2xl rounded-none bg-black text-white border-2 md:border-4 border-white shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] md:shadow-[8px_8px_0px_0px_rgba(255,255,255,1)] hover:shadow-[6px_6px_0px_0px_rgba(255,255,255,1)] md:hover:shadow-[12px_12px_0px_0px_rgba(255,255,255,1)] hover:-translate-x-0.5 md:hover:-translate-x-1 hover:-translate-y-0.5 md:hover:-translate-y-1 transition-all active:translate-x-0.5 md:active:translate-x-1 active:translate-y-0.5 md:active:translate-y-1 active:shadow-none font-black uppercase tracking-normal sm:tracking-widest h-auto"
                                 >
-                                    Get Started for Free
+                                    Go to Dashboard
                                 </Button>
                             </div>
                         </div>

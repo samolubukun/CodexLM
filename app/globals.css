@@ -370,4 +370,49 @@ input::placeholder, textarea::placeholder { opacity: 0.45; }
   display: none !important;
 }
 
+/* Neo-Brutalism Utilities */
+.neo-border {
+  border: 4px solid #000000;
+}
+
+.neo-shadow {
+  box-shadow: 8px 8px 0px 0px rgba(0,0,0,1);
+}
+
+.neo-shadow-sm {
+  box-shadow: 4px 4px 0px 0px rgba(0,0,0,1);
+}
+
+.neo-shadow-lg {
+  box-shadow: 12px 12px 0px 0px rgba(0,0,0,1);
+}
+
+.neo-shadow-hover:hover {
+  box-shadow: 12px 12px 0px 0px rgba(0,0,0,1);
+  transform: translate(-4px, -4px);
+}
+
+.neo-shadow-active:active {
+  box-shadow: 0px 0px 0px 0px rgba(0,0,0,1);
+  transform: translate(8px, 8px);
+}
+
+.neo-card {
+  border: 4px solid #000000;
+  box-shadow: 8px 8px 0px 0px rgba(0,0,0,1);
+  background-color: #ffffff;
+}
+
+.neo-button {
+  border: 4px solid #000000;
+  box-shadow: 4px 4px 0px 0px rgba(0,0,0,1);
+  font-weight: 900;
+  transition: all 0.2s;
+}
+
+.neo-button:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0px 0px 0px 0px rgba(0,0,0,1);
+}
+
 
