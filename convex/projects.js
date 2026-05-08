@@ -51,7 +51,7 @@ export const deleteProject = mutation({
             .query("sources")
             .withIndex("by_project", (q) => q.eq("projectId", args.projectId))
             .collect();
-            
+
         for (const source of sources) {
             const chunks = await ctx.db
                 .query("chunks")
