@@ -515,6 +515,37 @@ export default function LandingPage() {
 
                 </section>
 
+                {/* How it Works */}
+                <section className="py-24 md:py-40 px-6 bg-slate-50 relative overflow-hidden border-t border-slate-100">
+                    <div className="max-w-7xl mx-auto relative z-10">
+                        <div className="text-center mb-16 md:mb-24">
+                            <h2 className="text-[10px] md:text-xs font-black uppercase tracking-[0.3em] text-indigo-600 mb-4">The Workflow</h2>
+                            <p className="text-3xl md:text-5xl font-black text-slate-900 tracking-tight">How CodexLM transforms research.</p>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8">
+                            {[
+                                { icon: UploadCloud, title: "1. Ingest", desc: "Upload PDFs, paste links, or upload audio files instantly." },
+                                { icon: Cpu, title: "2. Analyze", desc: "Our AI maps deep connections across your entire workspace." },
+                                { icon: Bot, title: "3. Interact", desc: "Engage in deep, context-aware dialogue with your knowledge base." },
+                                { icon: Zap, title: "4. Create", desc: "Generate mind maps, audio briefings, and studio-quality outputs." }
+                            ].map((step, i) => (
+                                <div key={i} className="relative flex flex-col items-center text-center group">
+                                    <div className="w-20 h-20 rounded-[2rem] bg-white border border-slate-200 shadow-xl shadow-black/[0.02] flex items-center justify-center mb-8 group-hover:scale-110 group-hover:border-indigo-500/30 transition-all duration-500 bg-gradient-to-br from-white to-slate-50">
+                                        <step.icon className="w-8 h-8 text-indigo-600" />
+                                    </div>
+                                    <h3 className="text-xl font-black text-slate-900 mb-3 tracking-tight">{step.title}</h3>
+                                    <p className="text-slate-500 font-medium text-sm leading-relaxed px-4">{step.desc}</p>
+                                    
+                                    {i < 3 && (
+                                        <div className="hidden md:block absolute top-10 left-[65%] w-[70%] h-px bg-slate-200" />
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
                 {/* Features Grid */}
                 <section className="py-20 md:py-32 px-6 bg-white">
                     <div className="max-w-7xl mx-auto">
@@ -536,6 +567,38 @@ export default function LandingPage() {
                     </div>
                 </section>
             </main>
+
+            {/* Final CTA */}
+            <section className="py-20 md:py-32 px-6 bg-white">
+                <div className="max-w-5xl mx-auto">
+                    <div className="relative rounded-[3rem] bg-slate-900 overflow-hidden p-8 md:p-16 text-center shadow-2xl shadow-indigo-500/20">
+                        {/* Decorative Background Elements */}
+                        <div className="absolute top-0 left-0 w-full h-full opacity-30 pointer-events-none">
+                            <div className="absolute -top-24 -left-24 w-64 h-64 bg-indigo-600 blur-[100px] rounded-full" />
+                            <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-emerald-600 blur-[100px] rounded-full" />
+                        </div>
+                        
+                        <div className="relative z-10 space-y-10">
+                            <h2 className="text-3xl sm:text-4xl md:text-6xl font-black text-white tracking-tighter leading-[1.1]">
+                                Master Your Knowledge. <br />
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-violet-400 to-emerald-400 italic">Start Today.</span>
+                            </h2>
+                            <p className="text-slate-400 text-lg md:text-2xl max-w-2xl mx-auto font-medium leading-relaxed">
+                                Experience the future of research with CodexLM's agentic workspace. 
+                                Everything you need to know, understood instantly.
+                            </p>
+                            <div className="pt-6">
+                                <Button 
+                                    onClick={handleGetStarted}
+                                    className="w-full sm:w-auto px-6 md:px-12 py-6 md:py-10 text-lg md:text-2xl rounded-[1.5rem] md:rounded-[2rem] bg-indigo-600 hover:bg-indigo-700 text-white shadow-2xl shadow-indigo-500/50 transition-all hover:scale-[1.05] active:scale-[0.95] font-black border-b-4 border-indigo-800"
+                                >
+                                    Get Started for Free
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
             <Footer />
         </div>

@@ -9,7 +9,7 @@ export async function POST(request) {
 
         // Extract system prompt if present
         const systemMessage = messages.find(m => m.role === 'system');
-        const systemPrompt = systemMessage?.content || 'You are a helpful AI assistant.';
+        const systemPrompt = systemMessage?.content || 'You are a helpful AI assistant. NEVER use em dashes (—) or long dashes; use standard hyphens or colons instead.';
 
         // Get the last user message as the prompt
         const lastUserMessage = messages.filter(m => m.role === 'user').pop();
