@@ -57,26 +57,28 @@ export function SlideViewer({ data }) {
                     </div>
 
                     {/* Footer Controls */}
-                    <div className="p-6 bg-slate-50 dark:bg-slate-900/50 border-t border-border flex justify-between items-center">
+                    <div className="p-3 sm:p-6 bg-slate-50 dark:bg-slate-900/50 border-t border-border flex justify-between items-center gap-2 overflow-hidden w-full min-w-0">
                         <Button 
                             variant="ghost" 
                             onClick={prevSlide}
-                            className="rounded-2xl px-6 py-5 h-auto text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-indigo-600"
+                            className="rounded-xl sm:rounded-2xl px-3 sm:px-6 py-4 sm:py-5 h-auto text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-indigo-600 shrink-0 min-w-0"
                         >
-                            <ChevronLeft className="w-4 h-4 mr-2" />
-                            Previous
+                            <ChevronLeft className="w-4 h-4 mr-1 sm:mr-2 shrink-0" />
+                            <span className="hidden sm:inline">Previous</span>
+                            <span className="sm:hidden">Prev</span>
                         </Button>
-                        <div className="flex items-center gap-2">
-                            <span className="text-[10px] font-black tabular-nums text-slate-400">
+                        <div className="flex items-center justify-center shrink-0 min-w-0 px-2">
+                            <span className="text-[9px] sm:text-[10px] font-black tabular-nums text-slate-400 whitespace-nowrap">
                                 {currentSlide + 1} / {totalSlides}
                             </span>
                         </div>
                         <Button 
                             onClick={nextSlide}
-                            className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl px-8 py-5 h-auto text-[10px] font-black uppercase tracking-widest shadow-lg shadow-indigo-500/20"
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl sm:rounded-2xl px-4 sm:px-8 py-4 sm:py-5 h-auto text-[9px] sm:text-[10px] font-black uppercase tracking-widest shadow-lg shadow-indigo-500/20 shrink-0 min-w-0"
                         >
-                            Next Slide
-                            <ChevronRight className="w-4 h-4 ml-2" />
+                            <span className="hidden sm:inline">Next Slide</span>
+                            <span className="sm:hidden">Next</span>
+                            <ChevronRight className="w-4 h-4 ml-1 sm:ml-2 shrink-0" />
                         </Button>
                     </div>
                 </div>

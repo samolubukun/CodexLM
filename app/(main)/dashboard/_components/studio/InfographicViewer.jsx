@@ -16,12 +16,12 @@ export function InfographicViewer({ data }) {
                     </div>
                     
                     {/* Stats Grid - Now wraps correctly */}
-                    <div className="lg:col-span-5 grid grid-cols-2 gap-3 overflow-x-auto sleek-scroll">
+                    <div className="lg:col-span-5 grid grid-cols-2 gap-2 sm:gap-3 w-full min-w-0">
                         {data.stats?.slice(0, 4).map((stat, i) => (
-                            <div key={i} className="bg-white/5 backdrop-blur-xl p-4 rounded-2xl border border-white/10 flex flex-col justify-between h-24">
-                                <p className="text-[8px] font-black uppercase tracking-widest text-indigo-300 leading-none">{stat.label}</p>
-                                <p className="text-lg font-black text-white mt-1">{stat.value}</p>
-                                <div className="h-1 w-8 bg-indigo-500 rounded-full mt-2" />
+                            <div key={i} className="bg-white/5 backdrop-blur-xl p-3 sm:p-4 rounded-2xl border border-white/10 flex flex-col h-full min-h-[6rem] w-full min-w-0">
+                                <p className="text-[8px] font-black uppercase tracking-widest text-indigo-300 leading-tight mb-2 break-words">{stat.label}</p>
+                                <p className="text-sm sm:text-lg font-black text-white mt-auto break-all">{stat.value}</p>
+                                <div className="h-1 w-6 sm:w-8 bg-indigo-500 rounded-full mt-3 shrink-0" />
                             </div>
                         ))}
                     </div>
