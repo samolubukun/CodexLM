@@ -41,16 +41,16 @@ export function SlideViewer({ data }) {
                         ))}
                     </div>
 
-                    <div className="flex-1 p-12 flex flex-col items-center justify-center text-center animate-in fade-in slide-in-from-right-8 duration-500" key={currentSlide}>
-                        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-500 mb-6 opacity-50">Slide {currentSlide + 1} of {totalSlides}</span>
-                        <h5 className="text-4xl font-black text-slate-900 dark:text-white mb-8 leading-tight tracking-tight">
+                    <div className="flex-1 p-6 sm:p-12 flex flex-col items-center justify-center text-center animate-in fade-in slide-in-from-right-8 duration-500" key={currentSlide}>
+                        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-500 mb-4 sm:mb-6 opacity-50">Slide {currentSlide + 1} of {totalSlides}</span>
+                        <h5 className="text-2xl sm:text-4xl font-black text-slate-900 dark:text-white mb-6 sm:mb-8 leading-tight tracking-tight">
                             {slides[currentSlide].title}
                         </h5>
                         <ul className="space-y-4 max-w-2xl">
                             {slides[currentSlide].content.map((point, idx) => (
-                                <li key={idx} className="flex items-start gap-4 text-left group/item">
-                                    <div className="mt-1.5 w-2 h-2 rounded-full bg-indigo-600 shrink-0 group-hover/item:scale-150 transition-transform" />
-                                    <p className="text-lg text-slate-600 dark:text-slate-300 leading-relaxed font-medium">{point}</p>
+                                <li key={idx} className="flex items-start gap-3 sm:gap-4 text-left group/item">
+                                    <div className="mt-1.5 w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-indigo-600 shrink-0 group-hover/item:scale-150 transition-transform" />
+                                    <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed font-medium">{point}</p>
                                 </li>
                             ))}
                         </ul>
