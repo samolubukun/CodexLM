@@ -11,20 +11,30 @@ const Loader = () => {
                 {/* Inner Ring (Reverse) */}
                 <div className="absolute h-16 w-16 rounded-full border-b-2 border-l-2 border-emerald-500 animate-[spin_1.5s_linear_infinite_reverse]"></div>
 
-                {/* Core Pulsing Icon/Text */}
+                {/* Core Logo */}
                 <div className="absolute flex flex-col items-center justify-center">
-                    <div className="h-8 w-8 rounded-full bg-indigo-600/20 animate-pulse flex items-center justify-center">
-                        <div className="h-3 w-3 rounded-full bg-indigo-600 shadow-[0_0_15px_rgba(79,70,229,0.5)]"></div>
+                    <div className="relative h-14 w-14 flex items-center justify-center">
+                        <img 
+                            src="/logo.png" 
+                            alt="CodexLM" 
+                            className="h-10 w-10 object-contain animate-pulse"
+                        />
+                        {/* Subtle glow behind logo */}
+                        <div className="absolute inset-0 bg-indigo-600/10 blur-xl rounded-full animate-pulse"></div>
                     </div>
                 </div>
             </div>
 
-            <div className="mt-8 flex flex-col items-center gap-2">
-                <h2 className="text-xl font-medium tracking-tight text-gradient animate-pulse">
-                    CodexLM
-                </h2>
-                <p className="text-sm text-muted-foreground animate-in slide-in-from-bottom-2 duration-700 delay-300">
-                    Preparing your research experience...
+            <div className="mt-10 flex flex-col items-center gap-3">
+                <div className="flex items-center gap-2">
+                    <span className="h-px w-8 bg-gradient-to-r from-transparent to-indigo-500/50"></span>
+                    <h2 className="text-2xl font-black tracking-tight text-indigo-600 dark:text-indigo-400 uppercase italic">
+                        CodexLM
+                    </h2>
+                    <span className="h-px w-8 bg-gradient-to-l from-transparent to-indigo-500/50"></span>
+                </div>
+                <p className="text-xs font-bold uppercase tracking-[0.3em] text-slate-400 animate-in slide-in-from-bottom-4 duration-1000 delay-300">
+                    Preparing your research workspace
                 </p>
             </div>
 
