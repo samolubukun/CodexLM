@@ -388,6 +388,15 @@ export async function POST(req) {
                 .catch((e) => console.error("Failed to update status to failed:", e));
         }
 
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        const errorStr = error.message?.toLowerCase() || "";
+        let errorMessage = "Failed to process source. Agent is overloaded. Please check the file and try again later. Apologies.";
+        
+        if (errorStr.includes("503") || errorStr.includes("429") || errorStr.includes("overloaded") || errorStr.includes("capacity")) {
+            errorMessage = "Failed to process source. Gemini is receiving high volume. Please try again later. Apologies.";
+        } else if (errorStr.includes("quota") || errorStr.includes("limit")) {
+            errorMessage = "Failed to process source. API quota exceeded. Please try again later. Apologies.";
+        }
+
+        return NextResponse.json({ error: errorMessage }, { status: 500 });
     }
 }

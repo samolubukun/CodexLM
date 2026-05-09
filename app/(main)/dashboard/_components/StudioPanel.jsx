@@ -103,6 +103,22 @@ export default function StudioPanel({ projectId }) {
             
             const data = await res.json();
             
+            if (!res.ok) {
+                // Cleanup the stuck job from the database
+                await deleteJob({ jobId });
+                
+                // Show specific error for Gemini overload
+                if (res.status === 503 || data.isOverloaded || data.error?.includes("high volume")) {
+                    toast.error("Gemini receiving high volume, try again later");
+                } else {
+                    toast.error(data.error || "Failed to generate content.");
+                }
+                
+                setIsGenerating(false);
+                setActiveType(null);
+                return;
+            }
+
             // Backend already handles database update for podcast/content
             const finalResult = data.output || data;
             setResult(finalResult);
@@ -116,6 +132,8 @@ export default function StudioPanel({ projectId }) {
         } catch (error) {
             console.error("Studio Error:", error);
             toast.error("Failed to generate content.");
+            setIsGenerating(false);
+            setActiveType(null);
         } finally {
             setIsGenerating(false);
         }

@@ -119,21 +119,24 @@ Return ONLY a valid JSON array in this exact format:
     } catch (error) {
         console.error("Podcast Generation Error:", error);
         
-        // Update job status to failed
-        try {
-            const { jobId } = await req.json();
-            if (jobId) {
-                await convex.mutation(api.studio_jobs.updateJobStatus, {
-                    jobId,
-                    status: "failed",
-                    output: { error: error.message }
-                });
-            }
-        } catch (innerError) {
-            console.error("Failed to update error status:", innerError);
+        const errorStr = error.message?.toLowerCase() || "";
+        const isGeminiOverload = errorStr.includes("503") || 
+                               errorStr.includes("429") || 
+                               errorStr.includes("overloaded") ||
+                               errorStr.includes("capacity");
+
+        let errorMessage = "Failed to generate content. Agent is overloaded. Please try again later. Apologies.";
+        
+        if (isGeminiOverload) {
+            errorMessage = "Failed to generate content. Gemini is receiving high volume. Please try again later. Apologies.";
+        } else if (errorStr.includes("quota") || errorStr.includes("limit")) {
+            errorMessage = "Failed to generate content. API quota exceeded. Please try again later. Apologies.";
         }
 
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ 
+            error: errorMessage,
+            isOverloaded: isGeminiOverload 
+        }, { status: isGeminiOverload ? 503 : 500 });
     }
 }
 

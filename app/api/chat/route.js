@@ -184,6 +184,16 @@ export async function POST(req) {
 
     } catch (error) {
         console.error("Chat Error:", error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        
+        const errorStr = error.message?.toLowerCase() || "";
+        let errorMessage = "I encountered an error. Agent is overloaded. Please try again later. Apologies.";
+        
+        if (errorStr.includes("503") || errorStr.includes("429") || errorStr.includes("overloaded") || errorStr.includes("capacity")) {
+            errorMessage = "I encountered an error. Gemini is receiving high volume. Please try again later. Apologies.";
+        } else if (errorStr.includes("quota") || errorStr.includes("limit")) {
+            errorMessage = "I encountered an error. API quota exceeded. Please try again later. Apologies.";
+        }
+
+        return NextResponse.json({ error: errorMessage }, { status: 500 });
     }
 }
