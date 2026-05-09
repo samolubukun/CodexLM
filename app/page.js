@@ -197,7 +197,7 @@ export default function LandingPage() {
                         >
                             <div className="inline-flex items-center gap-2 px-4 py-2 border-4 border-black bg-yellow-300 text-black mb-8 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
                                  <Sparkles className="w-4 h-4" />
-                                 <span className="text-xs font-black uppercase tracking-[0.2em]">Every Source Understood</span>
+                                 <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.1em] sm:tracking-[0.2em] whitespace-nowrap">Every Source Understood</span>
                             </div>
 
                             <h1 className="text-4xl sm:text-6xl md:text-8xl font-black mb-8 leading-[1.1] md:leading-[0.9] tracking-tighter text-slate-900 uppercase">

@@ -52,7 +52,7 @@ function AppHeader() {
     };
 
     return (
-        <div className='p-2.5 md:p-4 shadow-sm flex justify-between items-center px-3 md:px-6 bg-background border-b border-border'>
+        <div className='p-2.5 md:py-2.5 md:px-6 shadow-sm flex justify-between items-center px-3 bg-background border-b border-border'>
             
             {/* Hidden Modal rendered here so it triggers over everything */}
             <CreateProjectModal 

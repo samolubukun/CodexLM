@@ -9,7 +9,7 @@ export default function Header() {
     const handleGetStarted = () => router.push('/dashboard');
 
     return (
-        <nav className="fixed top-0 left-0 right-0 z-50 p-4 md:p-6 flex justify-between items-center border-b-4 border-black bg-white">
+        <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-4 md:px-10 md:py-3.5 flex justify-between items-center border-b-4 border-black bg-white">
             <div className="flex items-center gap-2 md:gap-2.5">
                 <Image src="/logo.png" alt="CodexLM Logo" width={32} height={32} className="w-7 h-7 md:w-9 md:h-9 object-contain" />
                 <span className="text-lg md:text-xl font-black tracking-tighter text-slate-900">
