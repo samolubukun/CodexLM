@@ -3,12 +3,33 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import { langSearch } from '@/lib/langsearch';
 import { queryVectors } from '@/lib/pinecone';
 import { generateEmbeddings } from '@/lib/embeddings';
+import { stackServerApp } from '@/stack';
+import { ConvexHttpClient } from "convex/browser";
+import { api } from "@/convex/_generated/api";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL);
 
 export async function POST(req) {
     try {
+        const user = await stackServerApp.getUser();
+        if (!user) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
         const { messages, projectId, sourceId, projectMemory, webSearchEnabled } = await req.json();
+
+        // Security: Verify project ownership
+        const convexUser = await convex.query(api.users.getUserByStackId, { stackId: user.id });
+        if (!convexUser) {
+            return NextResponse.json({ error: "User not synced" }, { status: 403 });
+        }
+
+        const project = await convex.query(api.projects.getProjectById, { projectId });
+        if (!project || project.userId !== convexUser._id) {
+            return NextResponse.json({ error: "Unauthorized access to project" }, { status: 403 });
+        }
+
 
         const availableTools = [];
 

@@ -2,12 +2,36 @@ import { NextResponse } from "next/server";
 import { deleteVectors } from "@/lib/pinecone";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "@/convex/_generated/api";
+import { stackServerApp } from "@/stack";
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL);
 
 export async function POST(req) {
     try {
+        const user = await stackServerApp.getUser();
+        if (!user) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
         const { sourceId } = await req.json();
+
+        if (!sourceId) {
+            return NextResponse.json({ error: "Source ID is required" }, { status: 400 });
+        }
+
+        // Security: Verify project ownership
+        const convexUser = await convex.query(api.users.getUserByStackId, { stackId: user.id });
+        const source = await convex.query(api.sources.getSourceById, { sourceId });
+        
+        if (!source) {
+            return NextResponse.json({ error: "Source not found" }, { status: 404 });
+        }
+
+        const project = await convex.query(api.projects.getProjectById, { projectId: source.projectId });
+        if (!project || project.userId !== convexUser?._id) {
+            return NextResponse.json({ error: "Unauthorized access to source" }, { status: 403 });
+        }
+
 
         if (!sourceId) {
             return NextResponse.json({ error: "Source ID is required" }, { status: 400 });

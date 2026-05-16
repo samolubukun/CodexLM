@@ -11,6 +11,14 @@ export const getSourcesByProject = query({
     },
 });
 
+export const getSourceById = query({
+    args: { sourceId: v.id('sources') },
+    handler: async (ctx, args) => {
+        return await ctx.db.get(args.sourceId);
+    },
+});
+
+
 export const createSource = mutation({
     args: {
         projectId: v.id('projects'),

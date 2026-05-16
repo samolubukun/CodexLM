@@ -4,14 +4,19 @@ import { stackServerApp } from "./stack";
 export async function middleware(request) {
     const user = await stackServerApp.getUser();
     if (!user) {
+        // If it's an API request, return 401 Unauthorized instead of redirecting
+        if (request.nextUrl.pathname.startsWith('/api')) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+        // For page requests, redirect to sign-in
         return NextResponse.redirect(new URL('/handler/sign-in', request.url));
     }
     return NextResponse.next();
 }
 
 export const config = {
-  // You can add your own route protection logic here
-  // Make sure not to protect the root URL, as it would prevent users from accessing static Next.js files or Stack's /handler path
-  matcher: '/dashboard/:path*',
+  // Protect dashboard, workspace, and api routes
+  matcher: ['/dashboard/:path*', '/workspace/:path*', '/api/:path*'],
 };
+
   

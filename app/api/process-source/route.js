@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { stackServerApp } from "@/stack";
+
 import mammoth from "mammoth";
 import * as cheerio from "cheerio";
 import { getTextExtractor } from "office-text-extractor";
@@ -262,9 +264,26 @@ function escapeHtml(str) {
 export async function POST(req) {
     let sourceId;
     try {
+        const user = await stackServerApp.getUser();
+        if (!user) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
         const body = await req.json();
         sourceId = body.sourceId;
         const { projectId, url, type, sourceName, textContent } = body;
+
+        // Security: Verify project ownership
+        const convexUser = await convex.query(api.users.getUserByStackId, { stackId: user.id });
+        if (!convexUser) {
+            return NextResponse.json({ error: "User not synced" }, { status: 403 });
+        }
+
+        const project = await convex.query(api.projects.getProjectById, { projectId });
+        if (!project || project.userId !== convexUser._id) {
+            return NextResponse.json({ error: "Unauthorized access to project" }, { status: 403 });
+        }
+
 
         let extractedText = "";
         let _rawHtml = null;
