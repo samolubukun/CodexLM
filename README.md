@@ -115,7 +115,6 @@ cd CodexLM
 *   `/convex`: Server-side functions, database schemas, and background jobs.
 *   `/components`: Reusable UI components including the Studio and Chat interfaces.
 *   `/lib`: Core utility functions for AI integration and data processing.
-*   `/services`: Metrics tracking and global application state management.
 
 ## License
 Copyright (c) 2026 CodexLM. Distributed under the MIT License.

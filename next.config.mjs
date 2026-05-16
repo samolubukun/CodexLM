@@ -15,26 +15,8 @@ const nextConfig = {
             },
         ],
     },
-    experimental: {
-        turbo: {
-            resolveAlias: {
-                '@vladmandic/human': './node_modules/@vladmandic/human/dist/human.esm.js',
-            },
-        },
-    },
     webpack: (config, { isServer }) => {
-        // Force both client AND server builds to resolve @vladmandic/human
-        // to the browser ESM bundle. The package's exports map is broken
-        // (keys missing "./" prefix), and the default resolution picks
-        // human.node.js which requires @tensorflow/tfjs-node (a native addon).
-        // PrecisionScan is dynamic-imported with ssr:false so the server
-        // never actually executes this code, but webpack still traces it.
-        config.resolve.alias['@vladmandic/human'] = path.resolve(
-            __dirname,
-            'node_modules/@vladmandic/human/dist/human.esm.js'
-        );
-
-        // Suppress face-api.js / tfjs warnings about missing fs and encoding
+        // Suppress warnings about missing fs and encoding in the browser
         if (!isServer) {
             config.resolve.fallback = {
                 ...config.resolve.fallback,

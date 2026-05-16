@@ -239,7 +239,7 @@ export default function LandingPage() {
                                         <div className="flex items-center gap-3">
                                             <div className="h-8 px-3 bg-slate-100 rounded-lg flex items-center gap-2 border border-slate-200">
                                                 <Folder className="w-3.5 h-3.5 text-slate-500" />
-                                                <span className="text-xs font-bold text-slate-800">Project Apollo</span>
+                                                <span className="text-xs font-bold text-slate-800">CodexLM Research</span>
                                                 <ChevronDown className="w-3.5 h-3.5 text-slate-500" />
                                             </div>
                                             <div className="h-8 px-3 bg-indigo-50 border border-indigo-100 rounded-lg flex items-center gap-1.5">
@@ -270,7 +270,7 @@ export default function LandingPage() {
                                                         <FileText className="w-5 h-5 text-rose-500" />
                                                     </div>
                                                     <div className="min-w-0">
-                                                        <p className="text-xs font-bold text-indigo-700 truncate">Mission_Brief.pdf</p>
+                                                        <p className="text-xs font-bold text-indigo-700 truncate">Research_Analysis.pdf</p>
                                                         <p className="text-[10px] text-indigo-400 font-bold uppercase tracking-widest mt-0.5">Processed</p>
                                                     </div>
                                                 </div>
@@ -298,7 +298,7 @@ export default function LandingPage() {
                                                         <Bot className="w-4 h-4 text-indigo-600" />
                                                     </div>
                                                     <div className="p-5 bg-indigo-50 rounded-[2rem] rounded-tl-none border border-indigo-100 w-[85%] shadow-sm">
-                                                        <p className="text-xs md:text-sm leading-relaxed text-indigo-900 font-medium italic">"I've fully analyzed the Mission Brief. The document outlines the new backend rendering engine. What would you like to know?"</p>
+                                                        <p className="text-xs md:text-sm leading-relaxed text-indigo-900 font-medium italic">"I've fully analyzed the Research Analysis. The document outlines the new vector architecture. What would you like to know?"</p>
                                                     </div>
                                                 </div>
                                                 <div className="flex gap-4 flex-row-reverse">
